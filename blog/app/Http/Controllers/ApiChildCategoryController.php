@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChildCaregory;
 use Illuminate\Http\Request;
-use App\Http\Requests\CreateCategoryRequest;
-use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 
-class ApiCategoryController extends Controller
+class ApiChildCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,8 @@ class ApiCategoryController extends Controller
     public function index()
     {
         //
-        $category = Category::with('ChildCaregory')->get();
+        //Shoe::with('category')->get();
+        $category = ChildCaregory::with('category')->get();
         return response()->json($category);
     }
 
@@ -36,13 +37,16 @@ class ApiCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateCategoryRequest $request)
+    public function store(Request $request)
     {
-        $category = new Category();
-        $category->fill($request->all());
-        $category->save();
+        //
+        $product = new ChildCaregory([
+            'title' => $request->get('title'),
+            'category_id' => $request->get('category_id'),  
+        ]);
 
-        return response()->json($category);
+        $product->save();
+        return response()->json($product);
     }
 
     /**
@@ -54,6 +58,11 @@ class ApiCategoryController extends Controller
     public function show($id)
     {
         //
+        $history = DB::table('child_caregories')
+        ->where('category_id', '=', $id)
+        ->get();
+
+        return response()->json($history);
     }
 
     /**
@@ -65,7 +74,6 @@ class ApiCategoryController extends Controller
     public function edit($id)
     {
         //
-        
     }
 
     /**
@@ -78,11 +86,12 @@ class ApiCategoryController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $category = Category::find($id);
-        $category->content = $request->content;
-        $category->save();
+        $product = ChildCaregory::find($id);
 
-        return response()->json($category);
+        $product->title = $request->title;
+        $product->save();
+
+        return response()->json($product);
     }
 
     /**
@@ -93,7 +102,7 @@ class ApiCategoryController extends Controller
      */
     public function destroy($id)
     {
-        $res = Category::destroy($id);
+        $res = ChildCaregory::destroy($id);
         if ($res) {
             return response()->json([
                 'status' => 1,
@@ -105,5 +114,6 @@ class ApiCategoryController extends Controller
                 'msg' => 'fail'
             ]);
         }
+        return response()->json("success");
     }
 }

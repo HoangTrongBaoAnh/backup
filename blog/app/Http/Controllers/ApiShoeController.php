@@ -18,6 +18,7 @@ class ApiShoeController extends Controller
         $categories = request()->input('categories', []);
         $prices = request()->input('prices', []);
         $orders = request()->input('orders');
+        $child = request()->input('child', []);
         //$posts = Shoe::latest()->paginate(9);
         // $products = Shoe::withFilters(
         //     request()->input('prices', []),
@@ -27,6 +28,8 @@ class ApiShoeController extends Controller
 
         $test = Shoe::when(count($categories), function ($query) use ($categories){
             $query->whereIn('category_id', $categories);
+        })->when(count($child), function ($query) use ($child){
+            $query->whereIn('childcategory_id', $child);
         })
         ->when(count($prices), function ($query) use ($prices){
             $query->where(function ($query) use ($prices) {
@@ -93,11 +96,13 @@ class ApiShoeController extends Controller
             'title' => $request->get('title'),
             'content' => $request->get('content'),  
             'picture' => $filename,
+            //'childcategory_id' => $request->get('child_category'),
             'price' => 12,  
         ]);
 
         if($request->input("category") != null){
             $product->category_id = $request->category;
+            $product->childcategory_id = $request->child_category;
         }
         $product->save();
         return response()->json($product);
@@ -155,6 +160,7 @@ class ApiShoeController extends Controller
 
         if($request->input("category") != null){
             $product->category_id = $request->category;
+            $product->childcategory_id = $request->child_category;
         }
 
         $product->content = $request->content;

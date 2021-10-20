@@ -1,6 +1,7 @@
 <template>
   <div class="row pt-4">
-    <div class="col-md-3 border-right">
+    <div class="col-md-3 border-right ">
+    <!-- 
     <v-list>
       <v-list-group
         v-for="item in categories"
@@ -9,6 +10,7 @@
       >
         <template v-slot:activator>
           <v-list-item-content>
+            
             <v-list-item-title v-text="item.content"></v-list-item-title>
           </v-list-item-content>
         </template>
@@ -18,26 +20,52 @@
           :key="child.title"
         >
           <v-list-item-content>
-            <v-list-item-title v-text="child.title"></v-list-item-title>
+            <NuxtLink :to="'/about?child='+child.id">
+                <v-list-item-title v-text="child.title"></v-list-item-title>
+            </NuxtLink>
+            
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
     </v-list>
-      <h2 class="pb-4 border-bottom">Category</h2>
-      <div class="form-check p-2" v-for="item in categories" :key="item.id">
+    -->
+    <v-list class="pb-4 border-bottom" flat>
+      <v-subheader>Danh mục</v-subheader>
+      <v-list-item-group
+        
+        color="primary"
+      >
+        <v-list-item
+          v-for="(item, i) in categories"
+          :key="i"
+        >
+          <v-list-item-content>
+            <NuxtLink :to="{ name: 'category-slug', params: { slug: item.content,id: item.id } }">
+                <v-list-item-title v-text="item.content"></v-list-item-title>
+            </NuxtLink>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+      <h2>Category</h2>
+      <div class="form-check p-2" v-for="item in childcategories" :key="item.id">
         <input
           :value="item.id"
-          v-model="selected.categories"
+          v-model="selected.child"
           :id="'category' + item.id"
           type="checkbox"
           class="form-check-input"
         />
         <label class="form-check-label" :for="'category' + item.id">
-          {{ item.content }} ({{ item.shoe_count }})
+          {{ item.title }} 
         </label>
       </div>
-      <h3 class="pb-4 border-bottom">Price</h3>
-      <div class="form-check p-2" v-for="item in prices" :key="'price' + item.id">
+      <h3 class="mt-2">Price</h3>
+      <div
+        class="form-check p-2"
+        v-for="item in prices"
+        :key="'price' + item.id"
+      >
         <input
           :value="item.id"
           v-model="selected.prices"
@@ -46,21 +74,21 @@
           class="form-check-input"
         />
         <label class="form-check-label" :for="'price' + item.id">
-          {{ item.content }}
+          {{ item.title }}
         </label>
       </div>
-      <h3 class="pb-4 border-bottom">Publisher</h3>
+      <h3 class="mt-2">Publisher</h3>
     </div>
     <div class="col-md-9">
-      <v-carousel hide-delimiters height="240px">
-        <v-carousel-item
-          v-for="(item,i) in items"
-          :key="i"
-          :src="item.src"
-        ></v-carousel-item>
-      </v-carousel>
+    <v-carousel hide-delimiters height="240px">
+    <v-carousel-item
+      v-for="(item,i) in items"
+      :key="i"
+      :src="item.src"
+    ></v-carousel-item>
+  </v-carousel>
       <v-select
-      class="pt-4"
+        class="pt-4"
         v-model="selected.orders"
         :menu-props="{ bottom: true, offsetY: true }"
         solo
@@ -70,14 +98,16 @@
         :selected="selected.orders"
       >
       </v-select>
+
       <div class="row">
+        
         <v-col
           v-for="(selection, i) in selections"
           :key="i"
           class="mb-6 shrink"
         >
           <v-chip :disabled="loading" close @click:close="close(selection)">
-            {{ selection.content.content }}
+            {{ selection.content.title }}
           </v-chip>
         </v-col>
       </div>
@@ -110,6 +140,7 @@
                 v-model="rating"
                 background-color="#777"
                 color="#f7bc3d"
+                icon-label="custom icon label text {0} of {1}"
               ></v-rating>
               <h3 class="title">
                 <nuxt-link
@@ -125,7 +156,7 @@
           </div>
         </div>
       </div>
-      <div class="text-center pt-4">
+      <div class="text-center">
         <v-pagination v-model="currentPage" :length="totalPage"></v-pagination>
       </div>
     </div>
@@ -164,7 +195,6 @@ export default {
   data() {
     return {
       rating: 4,
-      childs:[],
       items: [
           {
             src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
@@ -185,18 +215,19 @@ export default {
       totalPage: 0,
       categories: [],
       publishers: [],
+      childcategories: [],
       prices: [
         {
           id: 0,
-          content: "less than 50"
+          title: "less than 50"
         },
         {
           id: 1,
-          content: "50 -> 100"
+          title: "50 -> 100"
         },
         {
           id: 2,
-          content: "more than 100"
+          title: "more than 100"
         }
       ],
       orders: [
@@ -217,22 +248,44 @@ export default {
         prices: [],
         categories: [],
         publishers: [],
+        child:[],
         orders: 2
       }
     };
   },
+  async asyncData({ $axios, route }) {
+    //const { id } = route.params;
+    //console.log(id);
+    const categories = await $axios.$get(
+      "http://localhost/blog/public/api/category"
+    );
+    return { categories };
+  },
   mounted() {
-    this.loadProducts();
     this.loadCategories();
+    this.getChildCategory();
+    if (this.$route.query.tl != null) {
+      this.selected.categories.push(this.$route.query.tl);
+    }
+    // if (this.$route.query.child != null) {
+    //   this.selected.child.push(this.$route.query.child);
+    // }
+    console.log(this.selections);
+    this.loadProducts();
   },
   watch: {
+    '$route.query.tl': function (tl) {
+      this.selected.categories = [];
+      this.selected.categories.push(this.$route.query.tl);
+      this.loadProducts();
+    },
     currentPage() {
       this.loadProducts();
     },
     selected: {
       handler: function() {
         this.loadProducts();
-        this.loadCategories();
+        this.getChildCategory();
         this.currentPage = 1;
         //console.log(this.selected);
       },
@@ -251,12 +304,12 @@ export default {
   methods: {
     close(selection) {
       if (selection.id == 0) {
-        let index_category = this.selected.categories.findIndex(
+        let index_category = this.selected.child.findIndex(
           x => x == selection.content.id
         );
         //console.log(this.selected.categories);
         //console.log(index_category);
-        this.selected.categories.splice(index_category, 1);
+        this.selected.child.splice(index_category, 1);
         return;
       }
       let index_price = this.selected.prices.findIndex(
@@ -265,14 +318,6 @@ export default {
       //console.log(index_price);
       this.selected.prices.splice(index_price, 1);
     },
-    getChildCategory: function (id) {
-            this.loading = true;
-            baseRequest.get("childcategory/"+id)
-            .then((response) => {
-                this.childs = response.data;
-                console.log(this.childs);
-            });
-        },
     // additem(item) {
     //   if (
     //     this.selected.categories.filter(e => e.id === item.id).length > 0
@@ -286,6 +331,24 @@ export default {
     //   //console.log(this.selected.categories.includes(item));
     //   this.selected.categories.push(item);
     // },
+    getChildCategory: function () {
+      if (this.$route.query.tl == null) {
+     baseRequest.get("childcategory")
+            .then((response) => {
+                this.childcategories = response.data;
+                //console.log(this.childcategories);
+            });
+    }
+    else{
+//this.loading = true;
+            baseRequest.get("childcategory/"+this.$route.query.tl)
+            .then((response) => {
+                this.childcategories = response.data;
+                //console.log(this.childcategories);
+            });
+    }
+            
+        },
     async getPosts() {
       const ip = await this.$axios.$get(
         "http://localhost/blog/public/api/shoe?page=" + this.currentPage
@@ -307,7 +370,8 @@ export default {
             params: {
               categories: this.selected.categories,
               prices: this.selected.prices,
-              orders: this.selected.orders
+              orders: this.selected.orders,
+              child: this.selected.child
               //publishers: this.selected.publishers,
             }
           }
@@ -356,9 +420,9 @@ export default {
     selections() {
       const selections = [];
 
-      for (const selection of this.selected.categories) {
-        let index = this.categories.findIndex(x => x.id == selection);
-        selections.push({ id: 0, content: this.categories[index] });
+      for (const selection of this.selected.child) {
+        let index = this.childcategories.findIndex(x => x.id == selection);
+        selections.push({ id: 0, content: this.childcategories[index] });
       }
 
       for (const selection of this.selected.prices) {
@@ -372,6 +436,7 @@ export default {
 };
 </script>
 <style>
+
 .product-grid:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }

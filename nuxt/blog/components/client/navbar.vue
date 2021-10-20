@@ -1,7 +1,8 @@
 <template>
   <div id="nav">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Logo Here</a>
+    <div class="container">
+    <a class="navbar-brand" href="#">Logo Here</a>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
@@ -75,7 +76,10 @@
           </v-badge>
         </nuxt-link>
       </b-collapse>
+    </div>
+      
     </nav>
+    
   </div>
 </template>
 
@@ -106,6 +110,34 @@ export default {
       //   title: 'Vuetify.js'
     };
   },
+  // computed: {
+  //   crumbs() {
+  //   const fullPath = this.$route.fullPath
+  //     const params = fullPath.startsWith('/')
+  //       ? fullPath.substring(1).split('/')
+  //       : fullPath.split('/')
+  //     const crumbs = []
+
+  //     let path = ''
+
+  //     params.forEach((param, index) => {
+  //       path = `${path}/${param}`
+  //       const match = this.$router.match(path)
+
+  //       if (match.name !== null) {
+  //         crumbs.push({
+  //           text: match.name,
+  //           disabled: false,
+  //           href: match.path
+  //         })
+  //       }
+  //     })
+
+      
+  //     console.log(params) 
+  //     return crumbs
+  //   },
+  // },
   methods: {
     clear: function() {
       this.searchQuery = "";
@@ -129,6 +161,12 @@ export default {
 };
 </script>
 <style>
+.navbar-brand{
+  padding-left: 0 !important;
+}
+nav{
+  padding: 0 !important;
+}
 nav a {
   text-align: center;
   color: #949494;

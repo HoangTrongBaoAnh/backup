@@ -91,6 +91,13 @@
           <td>{{ desserts.item.id }}</td>
           <td>{{ desserts.item.content }}</td>
           <td>
+                <nuxt-link
+                  :to="{ name: 'admin-childcategory-id', params: { id: desserts.item.id } }"
+                >
+                  <button>childcategory</button>
+                </nuxt-link>
+          </td>
+          <td>
             <v-btn
               class="mr-4"
               tile
@@ -126,6 +133,7 @@ export default {
           value: "id",
         },
         { text: "Content", value: "content" },
+        { text: "childcateogry", value: "id" },
         { text: "Actions", value: "id" },
       ],
       search: "",
