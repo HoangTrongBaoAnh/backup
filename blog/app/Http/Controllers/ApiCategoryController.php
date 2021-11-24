@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Requests\ApiCategoryRequest;
 use Illuminate\Http\Request;
-use App\Http\Requests\CreateCategoryRequest;
 use App\Models\Category;
 
 class ApiCategoryController extends Controller
@@ -36,7 +35,7 @@ class ApiCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateCategoryRequest $request)
+    public function store(ApiCategoryRequest $request)
     {
         $category = new Category();
         $category->fill($request->all());
@@ -75,7 +74,7 @@ class ApiCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ApiCategoryRequest $request, $id)
     {
         //
         $category = Category::find($id);

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Http\Requests\ApiShoeRequest; 
 use App\Models\Shoe;
 
 class ApiShoeController extends Controller
@@ -65,6 +67,31 @@ class ApiShoeController extends Controller
         $user = Shoe::with('category')->get();
         return response()->json($user);
     }
+
+    public function bestSaleProduct()
+    {
+        /*
+        SELECT shoes.title,sum(quantity)
+        FROM `order_products`,`shoes`
+        WHERE shoes.id=order_products.product_id GROUP BY product_id
+        order BY sum(quantity) DESC;
+        */
+        $user = DB::table('order_products')
+        ->join('shoes', 'shoes.id', '=', 'order_products.product_id')
+        ->groupBy('order_products.product_id')
+        ->orderByRaw('SUM(quantity) desc')
+        ->take(4)->get();
+        return response()->json($user);
+    }
+
+    public function childCategory(Request $request)
+    {
+        $user = DB::table('shoes')
+        ->where('childcategory_id','=',$request->get('id'))
+        ->get();
+        return response()->json($user);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -81,7 +108,7 @@ class ApiShoeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ApiShoeRequest $request)
     {
         $filename = '';
         if ($request->hasFile('picture')) {
@@ -97,12 +124,15 @@ class ApiShoeController extends Controller
             'content' => $request->get('content'),  
             'picture' => $filename,
             //'childcategory_id' => $request->get('child_category'),
-            'price' => 12,  
+            'price' => $request->get('price'),  
         ]);
 
-        if($request->input("category") != null){
-            $product->category_id = $request->category;
-            $product->childcategory_id = $request->child_category;
+        if($request->input("category_id") != null){
+            $product->category_id = $request->category_id;
+            if($request->input("child_category") != null){
+                $product->childcategory_id = $request->child_category;
+            }
+            
         }
         $product->save();
         return response()->json($product);
@@ -116,7 +146,8 @@ class ApiShoeController extends Controller
      */
     public function show($id)
     {
-        $product = Shoe::find($id);
+        $product = Shoe::with('category')->where('id', $id)->first();
+        //$product = $product::with('category')->get();
         return response()->json($product);
     }
 

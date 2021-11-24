@@ -25,8 +25,23 @@ class ApiRegisterRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:6',
             'name' => 'required'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'name.required' => 'Vui long nhap ten minh vao',
+            'email.required' => 'Vui long nhap email minh vao',
+            'password.required' => 'Vui long nhap mat khau minh vao',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'email' => 'email address',
         ];
     }
 }

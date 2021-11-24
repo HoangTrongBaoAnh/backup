@@ -32,6 +32,9 @@ Route::post('/user/history', 'ApiUserController@buyinghistory')->middleware('aut
 
 Route::get('/category', 'ApiCategoryController@index');
 
+Route::post('/rating', 'ApiRatingController@store');
+Route::post('/rating/show', 'ApiRatingController@show');
+
 Route::get('/childcategory', 'ApiChildCategoryController@index');
 Route::get('/childcategory/{id}', 'ApiChildCategoryController@show');
 Route::post('/childcategory/create', 'ApiChildCategoryController@store')->middleware('auth:api');
@@ -39,6 +42,8 @@ Route::post('/childcategory/delete/{id}', 'ApiChildCategoryController@destroy')-
 Route::post('/childcategory/edit/{id}', 'ApiChildCategoryController@update')->middleware('auth:api');
 
 Route::get('/shoe/showall', 'ApiShoeController@showall');
+Route::post('/shoe/childCategory', 'ApiShoeController@childCategory');
+Route::get('/shoe/bestSaleProduct', 'ApiShoeController@bestSaleProduct');
 Route::post('/shoe/show/{id}', 'ApiShoeController@show');
 Route::get('/shoe', 'ApiShoeController@index');
 Route::get('/shoe/search', 'ApiShoeController@search');
