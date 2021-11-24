@@ -3,15 +3,39 @@
     <form @submit.prevent="CreatePost()">
       <div class="form-group">
         <label>Enter Name</label>
-        <input type="text" class="form-control" v-model="user.name" />
+        <input
+          type="text"
+          class="form-control"
+          :class="{ 'is-invalid': errors.name }"
+          v-model="user.name"
+        />
+        <div v-if="errors.name" class="invalid-feedback">
+          {{ errors.name[0] }}
+        </div>
       </div>
       <div class="form-group">
         <label>Enter Email</label>
-        <input type="text" class="form-control" v-model="user.email" />
+        <input
+          type="text"
+          class="form-control"
+          :class="{ 'is-invalid': errors.email }"
+          v-model="user.email"
+        />
+        <div v-if="errors.email" class="invalid-feedback">
+          {{ errors.email[0] }}
+        </div>
       </div>
       <div class="form-group">
         <label>Enter password</label>
-        <input type="text" class="form-control" v-model="user.password" />
+        <input
+          type="text"
+          class="form-control"
+          :class="{ 'is-invalid': errors.password }"
+          v-model="user.password"
+        />
+        <div v-if="errors.password" class="invalid-feedback">
+          {{ errors.password[0] }}
+        </div>
       </div>
       <br />
       <div align="center">
@@ -30,6 +54,7 @@ export default {
         password: "",
         email: "",
       },
+      errors: {},
     };
   },
   methods: {
@@ -41,6 +66,7 @@ export default {
           this.$router.push({ name: "login" });
         })
         .catch((error) => {
+          this.errors = error.response.data.errors;
           console.log(error);
         });
     },

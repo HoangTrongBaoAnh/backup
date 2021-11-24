@@ -92,7 +92,7 @@
                 <img
                   class="pic-1"
                   :src="
-                    'https://localhost/blog/public/images/' + product.picture
+                    'http://localhost/blog/public/images/' + product.picture
                   "
                 />
               </nuxt-link>
@@ -107,7 +107,7 @@
             </div>
             <div class="product-content">
               <v-rating
-                v-model="rating"
+                v-model="product.rating"
                 background-color="#777"
                 color="#f7bc3d"
               ></v-rating>
@@ -129,6 +129,29 @@
         <v-pagination v-model="currentPage" :length="totalPage"></v-pagination>
       </div>
     </div>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="timeout"
+    >
+      Login successfuly<v-icon
+          green
+          right
+        >
+          mdi-checkbox-marked-circle
+        </v-icon>
+      
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="blue"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
   <!-- <div class="form-group">
         <select class="custom-select" v-model="selected.orders" id="">
@@ -163,6 +186,7 @@ import baseRequest from "~/store/baseRequest";
 export default {
   data() {
     return {
+      snackbar: false,
       rating: 4,
       childs:[],
       items: [
@@ -222,6 +246,7 @@ export default {
     };
   },
   mounted() {
+    this.snackbar = this.$route.params.snackbar;
     this.loadProducts();
     this.loadCategories();
   },

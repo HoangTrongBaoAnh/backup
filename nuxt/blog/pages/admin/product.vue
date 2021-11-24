@@ -1,5 +1,14 @@
 <template>
   <v-app>
+    <div v-if="errors.message">
+      <div v-for="(error, index) in errors.errors" :key="index">
+        <v-alert type="error">
+          {{ error[0] }}
+        </v-alert>
+      </div>
+    </div>
+
+    <v-alert v-if="success" type="success">{{ success }}</v-alert>
     <v-data-table
       :headers="headers"
       :items="desserts"
@@ -53,12 +62,22 @@
                           />
                         </div>
                         <div class="form-group">
+                          <label>Enter price</label>
+                          <input
+                            type="number"
+                            min="10000"
+                            class="form-control"
+                            v-model="editedItem.price"
+                          />
+                        </div>
+                        <div class="form-group">
                           <label for="category">Category</label>
                           <select
                             class="form-control"
                             id="category"
                             v-on:change="handle_category"
                           >
+                            <option>Select</option>
                             <option
                               v-for="post in categories"
                               :key="post.id"
@@ -71,8 +90,11 @@
                         </div>
                         <div class="form-group">
                           <label for="childcategory">Child Category</label>
-                          <select class="form-control" id="childcategory" v-model="editedItem.child_categories">
-                            <option>Select</option>
+                          <select
+                            class="form-control"
+                            id="childcategory"
+                            v-model="editedItem.child_categories"
+                          >
                             <option
                               v-for="post in child_categories"
                               :key="post.id"
@@ -125,14 +147,14 @@
               height="70px"
               width="100px"
               v-bind:src="
-                'https://localhost/blog/public/images/' + desserts.item.picture
+                'http://localhost/blog/public/images/' + desserts.item.picture
               "
               alt="Italian Trulli"
             />
             <router-link
               :to="{
                 name: 'admin-product_image-id',
-                params: { id: desserts.item.id }
+                params: { id: desserts.item.id },
               }"
             >
               <button>More Image >></button>
@@ -170,14 +192,16 @@ export default {
           text: "Id",
           align: "start",
           sortable: false,
-          value: "id"
+          value: "id",
         },
         { text: "Title", value: "title" },
         { text: "Content", value: "content" },
         { text: "Category", value: "category.id" },
         { text: "Image", value: "picture" },
-        { text: "Actions", value: "id" }
+        { text: "Actions", value: "id" },
       ],
+      errors: {},
+      success: null,
       search: "",
       desserts: [],
       categories: [],
@@ -186,12 +210,14 @@ export default {
       editedIndex: -1,
       nameCategory: "",
       idCategory: "",
-      editedItem: [
-        {
-          content: "",
-          child_categories:""
-        }
-      ]
+      editedItem: {
+        picture: "",
+        content: "",
+        title: "",
+        category_id: null,
+        child_category: null,
+        price: "",
+      },
     };
   },
   methods: {
@@ -210,100 +236,116 @@ export default {
       //this.getCategory();
       console.log(this.editedItem);
     },
-    getPosts: function() {
+    getPosts: function () {
       this.loading = true;
-      baseRequest.get("shoe/showall").then(response => {
+      baseRequest.get("shoe/showall").then((response) => {
         this.desserts = response.data;
         //console.log(this.desserts);
       });
     },
-    getCategories: function() {
+    getCategories: function () {
       this.loading = true;
-      baseRequest.get("category").then(response => {
+      baseRequest.get("category").then((response) => {
         this.categories = response.data;
         this.nameCategory = this.categories[0].id;
       });
     },
-    getCategory: function() {
+    getCategory: function () {
       let data = new FormData();
       data.append("category", this.editedItem.category.id);
-      baseRequest.post("category/show", data).then(response => {
+      baseRequest.post("category/show", data).then((response) => {
         this.nameCategory = response.data.id;
         this.idCategory = response.data.content;
         //console.log(response.data);
       });
     },
-    handle_category: function(e) {
+    handle_category: function (e) {
       this.nameCategory = e.target.value;
-      baseRequest.get("childcategory/" + e.target.value).then(response => {
+      baseRequest.get("childcategory/" + e.target.value).then((response) => {
         this.child_categories = response.data;
         console.log(response.data);
       });
       console.log(this.nameCategory);
     },
-    handle: function(e) {
+    handle: function (e) {
       this.picture = e.target.files[0];
       console.log(this.picture);
     },
-    submit: function() {
+    submit: function () {
       if (this.editedIndex == -1) {
         let data = new FormData();
         data.append("picture", this.picture);
         data.append("content", this.editedItem.content);
         data.append("title", this.editedItem.title);
-        data.append("category", this.nameCategory);
+        data.append("category_id", this.nameCategory);
         data.append("child_category", this.editedItem.child_categories);
+        data.append("price", this.editedItem.price);
         baseRequest
           .post("shoe/create", data)
           .then(() => {
             this.editedIndex = -1;
             this.getPosts();
-            this.editedItem = [];
+            this.success = "success";
+            this.errors = [];
+            this.editedItem = {
+              picture: "",
+              content: "",
+              title: "",
+              category_id: "",
+              child_category: null,
+              price: 10000,
+            };
           })
-          .catch(error => {
-            console.log(error);
+          .catch((error) => {
+            this.success = null;
+            this.errors = error.response.data;
+            //console.log(error.response.data.errors.category_id[0]);
           });
       } else {
         let data = new FormData();
         data.append("picture", this.picture);
         data.append("content", this.editedItem.content);
         data.append("title", this.editedItem.title);
-        data.append("category", this.nameCategory);
+        data.append("category_id", this.nameCategory);
         data.append("child_category", this.editedItem.child_categories);
         baseRequest
           .post("shoe/edit/" + this.editedItem.id, data)
           .then(() => {
             this.editedIndex = -1;
             this.getPosts();
+            this.errors = [];
+            this.success = "success";
             this.getPosts();
             this.editedItem = [];
           })
-          .catch(error => {
-            console.log(error);
+          .catch((error) => {
+            this.success = null;
+            this.errors = error.response.data;
           });
       }
     },
-    deletePosts: function(id) {
+    deletePosts: function (id) {
       if (confirm("are you sure?"))
         baseRequest
           .post("shoe/delete/" + id)
-          .then(response => {
+          .then((response) => {
             this.getPosts();
             console.log(response);
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
-    }
+    },
   },
   mounted() {
     this.getPosts();
     this.getCategories();
+    this.editedItem.price = 10000;
   },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
-    }
-  }
+    },
+  },
 };
 </script>

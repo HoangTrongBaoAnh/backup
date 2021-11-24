@@ -28,7 +28,7 @@
           <v-card class="mx-auto" max-width="auto" tile>
             <v-card-title>User Info</v-card-title>
             <v-card-text>
-              <v-row align="center" class="mx-0">
+              <v-row align="center" class="mx-0 mb-2">
                 <p>{{ user.name }}</p>
               </v-row>
             </v-card-text>
@@ -67,7 +67,11 @@
                     </v-toolbar>
                   </template>
                   <template
-                    v-slot:item.data-table-expand="{ item, isExpanded, expand }"
+                    v-slot:[`item.data-table-expand`]="{
+                      item,
+                      isExpanded,
+                      expand,
+                    }"
                   >
                     <v-btn
                       @click="
@@ -111,23 +115,44 @@
               <v-tab-item class="m-2">
                 <v-container>
                   <form @submit.prevent="UpdateProfile()">
-                    <div class="form-group form-inline">
-                      <label for="name">Name:</label>
-                      <input
-                        name="name"
-                        id="name"
-                        type="text"
-                        class="form-control ml-2 w-75"
-                        v-model="name"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label for="picture">Hình</label>
-                      <input type="file" id="picture" v-on:change="handle" />
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                      Submit
+                    <div class="row mb-2">
+                      <div class="col-4">                        
+                        <!-- <label for="picture">Hình</label>
+                      <input type="file" id="picture" v-on:change="handle" /> -->
+                        <dropzone
+                          :options="dropzoneOptions"
+                          id="foo"
+                          ref="foo"
+                          
+                          :destroyDropzone="true"
+                          @vdropzone-file-added="added()"
+                          @vdropzone-removed-file="remove()"
+                        ></dropzone>
+                      </div>
+                      <div class="form-group col-8">
+                        <label for="name">Name</label>
+                        <input
+                          name="name"
+                          id="name"
+                          type="text"
+                          class="form-control"
+                          v-model="name"
+                        />
+                        <label for="name">Name</label>
+                        <input
+                          name="x"
+                          id="x"
+                          type="text"
+                          class="form-control"
+                          v-model="name"
+                        />
+                        <button type="submit" class="btn btn-primary mt-4">
+                      Save changes
                     </button>
+                      </div>
+                    </div>
+
+                    
                   </form>
                 </v-container>
               </v-tab-item>
@@ -140,9 +165,11 @@
 </template>
 
 <script>
-import baseRequest from "../../store/baseRequest";
+import Dropzone from "nuxt-dropzone";
+import "nuxt-dropzone/dropzone.css";
+import baseRequest from "~/store/baseRequest";
 export default {
-  layout: 'admin',
+  layout: "admin",
   data() {
     return {
       headers: [
@@ -155,6 +182,15 @@ export default {
         { text: "Name", value: "name" },
         { text: "Total", value: "total" },
       ],
+      dropzoneOptions: {
+        url: "https://httpbin.org/post",
+        uploadMultiple: false,
+        maxFiles: 1,
+        
+        addRemoveLinks: true,
+        dictDefaultMessage: "<i class='fa fa-cloud-upload'></i>UPLOAD ME",
+      },
+      currentFile: null,
       search: "",
       desserts: [],
       order_detail: [],
@@ -164,11 +200,25 @@ export default {
       expanded: [],
     };
   },
-  created() {
+  mounted() {
     this.CheckedLogin();
     this.buyingHistory();
   },
+  components: {
+    Dropzone,
+  },
   methods: {
+    added() {
+      if (this.currentFile !== null) {
+        this.$refs.foo.dropzone.removeFile(this.$refs.foo.dropzone.files[0]);
+      }
+      this.currentFile = this.$refs.foo.dropzone;
+      //console.log(this.currentFile);
+    },
+    remove() {
+      this.currentFile = null;
+      //console.log(this.currentFile);
+    },
     getSamples: function (id) {
       baseRequest
         .post("order/detail/" + id)
@@ -191,15 +241,19 @@ export default {
         return {};
       }
       let data = new FormData();
-      if (this.picture != "") {
-        data.append("picture", this.picture);
+      if (this.$refs.foo.dropzone != "") {
+        data.append("picture", this.$refs.foo.dropzone.files[0]);
       }
+
+      //data.append("picture", this.$refs.foo.dropzone.files[0]);
+      //console.log(this.$refs.foo.dropzone.files[0]);
+      //console.log(this.$refs.foo.dropzone);
       data.append("name", this.name);
       baseRequest
         .post("user/edit/" + this.user.id, data)
         .then((res) => {
           this.CheckedLogin();
-          console.log(res.data);
+          //console.log(res.data);
         })
         .catch((error) => {
           console.log(error);
@@ -227,3 +281,18 @@ export default {
   },
 };
 </script>
+<style>
+
+.dropzone .dz-preview {
+display: inherit;
+}
+.vue-dropzone>.dz-preview .dz-remove{
+  margin: 5px;
+  padding-top: 0px;
+}
+
+.dropzone .dz-preview .dz-image img{
+  width: 150px;
+  height: 150px;
+} 
+</style>

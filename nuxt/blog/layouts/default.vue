@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Nav />
-    <v-main style="padding-bottom:300px">
+    <v-main style="padding-bottom:300px;background-color: #B9B8B1;color:#fff">
       <v-container>
         <Breadcrumb />
         <Nuxt />
@@ -88,8 +88,5 @@ export default {
 };
 </script>
 <style>
-.container {
-  padding-right: 0;
-  padding-left: 0;
-}
+
 </style>

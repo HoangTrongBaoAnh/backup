@@ -122,7 +122,7 @@
                 <img
                   class="pic-1"
                   :src="
-                    'https://localhost/blog/public/images/' + product.picture
+                    'http://localhost/blog/public/images/' + product.picture
                   "
                 />
               </nuxt-link>
@@ -137,10 +137,12 @@
             </div>
             <div class="product-content">
               <v-rating
-                v-model="rating"
-                background-color="#777"
-                color="#f7bc3d"
-                icon-label="custom icon label text {0} of {1}"
+                :value="4.5"
+                color="amber"
+                dense
+                half-increments
+                readonly
+                size="14"
               ></v-rating>
               <h3 class="title">
                 <nuxt-link
@@ -332,21 +334,11 @@ export default {
     //   this.selected.categories.push(item);
     // },
     getChildCategory: function () {
-      if (this.$route.params.id == null) {
-     baseRequest.get("childcategory")
+       baseRequest.get("childcategory/"+this.$route.params.id)
             .then((response) => {
                 this.childcategories = response.data;
                 //console.log(this.childcategories);
             });
-    }
-    else{
-//this.loading = true;
-            baseRequest.get("childcategory/"+this.$route.params.id)
-            .then((response) => {
-                this.childcategories = response.data;
-                //console.log(this.childcategories);
-            });
-    }
             
         },
     async getPosts() {

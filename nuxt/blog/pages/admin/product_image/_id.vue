@@ -96,7 +96,7 @@
                 <img
                   height="70px"
                   width="100px"
-                  v-bind:src="'https://localhost/blog/public/images/' + img.item.picture"
+                  v-bind:src="'http://localhost/blog/public/images/' + img.item.picture"
                   alt="Italian Trulli"
                 />
             </td>

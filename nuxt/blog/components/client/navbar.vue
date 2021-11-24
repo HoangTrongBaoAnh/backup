@@ -1,6 +1,6 @@
 <template>
   <div id="nav">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
     <div class="container">
     <a class="navbar-brand" href="#">Logo Here</a>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -72,7 +72,7 @@
           <v-badge color="deep-purple accent-4" content="">
             <span>Checkout</span>
             <span slot="badge"> {{ $store.state.cart.length }} </span>
-            <v-icon>mdi-cart</v-icon>
+            <v-icon color="#fff">mdi-cart</v-icon>
           </v-badge>
         </nuxt-link>
       </b-collapse>
@@ -179,7 +179,7 @@ nav a {
 
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  color:#fff;
 }
 
 #nav a.nuxt-link-exact-active {

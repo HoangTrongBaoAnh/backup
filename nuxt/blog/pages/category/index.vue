@@ -1,7 +1,7 @@
 <template>
   <div class="row pt-4">
-    <div class="col-md-3 border-right ">
-    <!-- 
+    <div class="col-md-3 border-right">
+      <!-- 
     <v-list>
       <v-list-group
         v-for="item in categories"
@@ -29,26 +29,29 @@
       </v-list-group>
     </v-list>
     -->
-    <v-list class="pb-4 border-bottom" flat>
-      <v-subheader>Danh mục</v-subheader>
-      <v-list-item-group
-        
-        color="primary"
-      >
-        <v-list-item
-          v-for="(item, i) in categories"
-          :key="i"
-        >
-          <v-list-item-content>
-            <NuxtLink :to="{ name: 'category-slug', params: { slug: item.content,id: item.id } }">
+      <v-list class="pb-4 border-bottom" flat>
+        <v-subheader>Danh mục</v-subheader>
+        <v-list-item-group color="primary">
+          <v-list-item v-for="(item, i) in categories" :key="i">
+            <v-list-item-content>
+              <NuxtLink
+                :to="{
+                  name: 'category-slug',
+                  params: { slug: item.content, id: item.id },
+                }"
+              >
                 <v-list-item-title v-text="item.content"></v-list-item-title>
-            </NuxtLink>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+              </NuxtLink>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
       <h2>Category</h2>
-      <div class="form-check p-2" v-for="item in childcategories" :key="item.id">
+      <div
+        class="form-check p-2"
+        v-for="item in childcategories"
+        :key="item.id"
+      >
         <input
           :value="item.id"
           v-model="selected.child"
@@ -57,7 +60,7 @@
           class="form-check-input"
         />
         <label class="form-check-label" :for="'category' + item.id">
-          {{ item.title }} 
+          {{ item.title }}
         </label>
       </div>
       <h3 class="mt-2">Price</h3>
@@ -80,13 +83,13 @@
       <h3 class="mt-2">Publisher</h3>
     </div>
     <div class="col-md-9">
-    <v-carousel hide-delimiters height="240px">
-    <v-carousel-item
-      v-for="(item,i) in items"
-      :key="i"
-      :src="item.src"
-    ></v-carousel-item>
-  </v-carousel>
+      <v-carousel hide-delimiters height="240px">
+        <v-carousel-item
+          v-for="(item, i) in items"
+          :key="i"
+          :src="item.src"
+        ></v-carousel-item>
+      </v-carousel>
       <v-select
         class="pt-4"
         v-model="selected.orders"
@@ -100,7 +103,6 @@
       </v-select>
 
       <div class="row">
-        
         <v-col
           v-for="(selection, i) in selections"
           :key="i"
@@ -122,7 +124,7 @@
                 <img
                   class="pic-1"
                   :src="
-                    'https://localhost/blog/public/images/' + product.picture
+                    'http://localhost/blog/public/images/' + product.picture
                   "
                 />
               </nuxt-link>
@@ -137,16 +139,18 @@
             </div>
             <div class="product-content">
               <v-rating
-                v-model="rating"
-                background-color="#777"
-                color="#f7bc3d"
-                icon-label="custom icon label text {0} of {1}"
+                :value="4.5"
+                color="amber"
+                dense
+                half-increments
+                readonly
+                size="14"
               ></v-rating>
               <h3 class="title">
                 <nuxt-link
                   :to="{
                     name: 'product_detail-id',
-                    params: { id: product.id }
+                    params: { id: product.id },
                   }"
                   >{{ product.title }}</nuxt-link
                 >
@@ -187,8 +191,7 @@
               <h3>price {{ product.price }}</h3>
             </div>
           </div>
--->
-</template>
+--></template>
 <script>
 import baseRequest from "~/store/baseRequest";
 export default {
@@ -196,19 +199,19 @@ export default {
     return {
       rating: 4,
       items: [
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-          },
-        ],
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
+        },
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
+        },
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
+        },
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+        },
+      ],
       posts: [],
       loading: false,
       currentPage: 1,
@@ -219,38 +222,38 @@ export default {
       prices: [
         {
           id: 0,
-          title: "less than 50"
+          title: "less than 50",
         },
         {
           id: 1,
-          title: "50 -> 100"
+          title: "50 -> 100",
         },
         {
           id: 2,
-          title: "more than 100"
-        }
+          title: "more than 100",
+        },
       ],
       orders: [
         {
           id: 0,
-          name: "lasted upload"
+          name: "lasted upload",
         },
         {
           id: 1,
-          name: "A->Z"
+          name: "A->Z",
         },
         {
           id: 2,
-          name: "Oldest upload"
-        }
+          name: "Oldest upload",
+        },
       ],
       selected: {
         prices: [],
         categories: [],
         publishers: [],
-        child:[],
-        orders: 2
-      }
+        child: [],
+        orders: 2,
+      },
     };
   },
   async asyncData({ $axios, route }) {
@@ -274,7 +277,7 @@ export default {
     this.loadProducts();
   },
   watch: {
-    '$route.query.tl': function (tl) {
+    "$route.query.tl": function (tl) {
       this.selected.categories = [];
       this.selected.categories.push(this.$route.query.tl);
       this.loadProducts();
@@ -283,14 +286,14 @@ export default {
       this.loadProducts();
     },
     selected: {
-      handler: function() {
+      handler: function () {
         this.loadProducts();
         this.getChildCategory();
         this.currentPage = 1;
         //console.log(this.selected);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   // async asyncData({ $axios }) {
   //   // const post2 = await $axios.$get(
@@ -305,7 +308,7 @@ export default {
     close(selection) {
       if (selection.id == 0) {
         let index_category = this.selected.child.findIndex(
-          x => x == selection.content.id
+          (x) => x == selection.content.id
         );
         //console.log(this.selected.categories);
         //console.log(index_category);
@@ -313,7 +316,7 @@ export default {
         return;
       }
       let index_price = this.selected.prices.findIndex(
-        x => x == selection.content.id
+        (x) => x == selection.content.id
       );
       //console.log(index_price);
       this.selected.prices.splice(index_price, 1);
@@ -333,22 +336,20 @@ export default {
     // },
     getChildCategory: function () {
       if (this.$route.query.tl == null) {
-     baseRequest.get("childcategory")
-            .then((response) => {
-                this.childcategories = response.data;
-                //console.log(this.childcategories);
-            });
-    }
-    else{
-//this.loading = true;
-            baseRequest.get("childcategory/"+this.$route.query.tl)
-            .then((response) => {
-                this.childcategories = response.data;
-                //console.log(this.childcategories);
-            });
-    }
-            
-        },
+        baseRequest.get("childcategory").then((response) => {
+          this.childcategories = response.data;
+          //console.log(this.childcategories);
+        });
+      } else {
+        //this.loading = true;
+        baseRequest
+          .get("childcategory/" + this.$route.query.tl)
+          .then((response) => {
+            this.childcategories = response.data;
+            //console.log(this.childcategories);
+          });
+      }
+    },
     async getPosts() {
       const ip = await this.$axios.$get(
         "http://localhost/blog/public/api/shoe?page=" + this.currentPage
@@ -357,7 +358,7 @@ export default {
       this.totalPage = ip.last_page;
       console.log(this.posts);
     },
-    loadProducts: function() {
+    loadProducts: function () {
       let data = new FormData();
       data.append("categories", this.selected.categories.id);
       //console.log(this.selected.categories.map(x => x.id));
@@ -371,36 +372,36 @@ export default {
               categories: this.selected.categories,
               prices: this.selected.prices,
               orders: this.selected.orders,
-              child: this.selected.child
+              child: this.selected.child,
               //publishers: this.selected.publishers,
-            }
+            },
           }
         )
-        .then(response => {
+        .then((response) => {
           //console.log(this.selections);
           this.posts = response.data;
           this.totalPage = response.last_page;
           //this.loading = false;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error);
         });
     },
-    loadCategories: function() {
+    loadCategories: function () {
       this.$axios
         .$get("http://localhost/blog/public/api/category", {
           params: {
-            categories: this.selected.categories
-          }
+            categories: this.selected.categories,
+          },
         })
-        .then(response => {
+        .then((response) => {
           //console.log(response);
           this.categories = response;
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error);
         });
-    }
+    },
     // async loadCategories() {
     //   const cat = (
     //     await this.$axios.$get("http://localhost/blog/public/api/category")
@@ -421,22 +422,21 @@ export default {
       const selections = [];
 
       for (const selection of this.selected.child) {
-        let index = this.childcategories.findIndex(x => x.id == selection);
+        let index = this.childcategories.findIndex((x) => x.id == selection);
         selections.push({ id: 0, content: this.childcategories[index] });
       }
 
       for (const selection of this.selected.prices) {
-        let index = this.prices.findIndex(x => x.id == selection);
+        let index = this.prices.findIndex((x) => x.id == selection);
         selections.push({ id: 1, content: this.prices[index] });
       }
 
       return selections;
-    }
-  }
+    },
+  },
 };
 </script>
 <style>
-
 .product-grid:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
