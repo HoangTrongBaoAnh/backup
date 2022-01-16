@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,9 +41,18 @@ namespace WebApi.Data
             return category;
         }
 
-        public List<Category> GetCategories()
+        public List<Category> GetCategories(PaginationParam @params)
         {
-            return _configuration.Categories.ToList();
+            var categories = _configuration.Categories
+                .ToList();
+            var paginationmetada = new PaginationMetaData(categories.Count(),@params.Page,@params.ItemsPerPage);
+            
+
+            var category = categories.Skip((@params.Page - 1) * @params.ItemsPerPage)
+                .Take(@params.ItemsPerPage).ToList();
+
+            
+            return category;
         }
 
         public Category GetCategory(int id)

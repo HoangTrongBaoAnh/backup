@@ -11,19 +11,23 @@ using WebApi.Models;
 using WebApi.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text.Json;
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = UserRoles.Admin)]
     public class CategoryController : ControllerBase
     {
+        private ApplicationDbContext _configuration;
+
         private ICategoryData _CategoryData;
 
-        public CategoryController(ICategoryData CategoryData)
+        public CategoryController(ICategoryData CategoryData, ApplicationDbContext configuration)
         {
             _CategoryData = CategoryData;
+            _configuration = configuration;
         }
 
         /*
@@ -35,19 +39,24 @@ namespace WebApi.Controllers
         }
         */
         [HttpGet]
-        public IActionResult GetCategories()
+        public IActionResult GetCategories([FromQuery] PaginationParam @params)
         {
-            return Ok(_CategoryData.GetCategories());
+            var categories = _configuration.Categories
+                   .ToList();
+            var paginationmetada = new PaginationMetaData(categories.Count(), @params.Page, @params.ItemsPerPage);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationmetada));
+            return Ok(_CategoryData.GetCategories(@params));
         }
 
         [HttpGet("{id}")]
         public IActionResult GetCategory(int id)
         {
+            
             return Ok(_CategoryData.GetCategory(id));
         }
 
         [HttpPost]
-        public IActionResult AddCategory(Category category)
+        public IActionResult AddCategory([FromForm] Category category)
         {
             _CategoryData.addCategory(category);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + category.Id,category);

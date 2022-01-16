@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace WebApi.Data
 {
     public interface ICategoryData
     {
-        List<Category> GetCategories();
+        List<Category> GetCategories([FromQuery] PaginationParam @param);
 
         Category GetCategory(int id);
 

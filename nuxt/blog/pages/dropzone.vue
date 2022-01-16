@@ -1,44 +1,79 @@
 <template>
-    <div>
-        <!-- Regular Dropzone -->
-        <dropzone id="foo" ref="foo" :options="options" :destroyDropzone="true"></dropzone>
-
-        <!-- Using a custom slot -->
-        <dropzone id="bar" ref="bar" :options="options" :destroyDropzone="true" :useCustomSlot="true">
-            <div class="dropzone-custom-content">
-                <h3 class="dropzone-custom-title">Custom slot</h3>
-                <p class="subtitle">Subtitle</p>
-            </div>
-        </dropzone>
-
-       <button @click="submit">Add 1 to counter</button>
-    </div>
+  <div class="container">
+    <ProductZoomer :base-images="images" :base-zoomer-options="zoomerOptions"></ProductZoomer>
+  </div>
 </template>
+
 <script>
-import Dropzone from 'nuxt-dropzone'
-import 'nuxt-dropzone/dropzone.css'
 
 export default {
-    components: {
-        Dropzone
-    },
-    data() {
-        return {
-            // See https://rowanwins.github.io/vue-dropzone/docs/dist/index.html#/props
-            options: {
-                url: "http://httpbin.org/anything"
-            }
-        }
-    },
-    methods:{
-        submit(){
-      //this.counter++;
-      console.log(this.$refs.foo.dropzone)
-    },
-    },
-    mounted() {
-        // Everything is mounted and you can access the dropzone instance
-        const instance = this.$refs.foo.dropzone
-    }
-}
+  data() {
+    return {
+      images: {
+        thumbs: [
+         {
+            id: 1,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/1.jpeg"
+          },
+          {
+            id: 2,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/2.jpeg"
+          },
+          {
+            id: 3,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/3.jpeg"
+          },
+          {
+            id: 4,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/4.jpeg"
+          },
+          
+        ],
+        normal_size: [
+          {
+            id: 1,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/1.jpeg"
+          },
+          {
+            id: 2,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/2.jpeg"
+          },
+          {
+            id: 3,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/3.jpeg"
+          },
+          {
+            id: 4,
+            url:
+              "https://yoohooworld.com/assets/images/vue_product_zoomer/normal_size/4.jpeg"
+          },
+          
+        ],
+        
+      },
+      zoomerOptions: {
+        zoomFactor: 3,
+      pane: "pane",
+      hoverDelay: 300,
+      namespace: "zoomer-bottom",
+      move_by_click: false,
+      scroll_items: 4,
+      choosed_thumb_border_color: "#dd2c00",
+      scroller_position: "bottom",
+      zoomer_pane_position: "right"
+      }
+    };
+  }
+};
 </script>
+
+<style>
+
+</style>

@@ -4,9 +4,14 @@
       <section class="mb-5">
         <div class="row">
           <div class="col-md-6 mb-4 mb-md-0">
-            <div id="mdb-lightbox-ui"></div>
-
-            <div class="mdb-lightbox">
+            
+<div v-if="images.normal_size.length">
+              <ProductZoomer
+              :base-images="images"
+              :base-zoomer-options="zoomerOptions"
+            ></ProductZoomer>
+            </div>
+            <!-- <div class="mdb-lightbox">
               <div class="row product-gallery mx-1">
                 <div class="col-12 mb-0">
                   <figure class="img-hover-zoom img-hover-zoom--quick-zoom">
@@ -33,7 +38,8 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
+            
           </div>
           <div class="col-md-6">
             <div style="width: 70%">
@@ -149,7 +155,27 @@
         </div>
       </section>
     </form>
+    <div id="fb-root"></div>
+    <div
+      class="fb-share-button"
+      v-bind:data-href="url"
+      data-layout="button_count"
+    >
+      <a
+        target="_blank"
+        :href="
+          'https://www.facebook.com/sharer/sharer.php?u=' +
+            url +
+            '&amp;src=sdkpreparse'
+        "
+        class="fb-xfbml-parse-ignore"
+      >
+        Chia sẻ
+      </a>
+    </div>
   </div>
+  
+    
 </template>
 <!-- 
 <form @submit.prevent="submit()">
@@ -205,20 +231,37 @@
 
 -->
 <script>
+import img from "~/store/img";
 import baseRequest from "~/store/baseRequest";
 export default {
   data() {
     return {
+      imgURL: null,
       //posts: [],
       current: null,
       imgs: [],
+      images: {
+        thumbs: [],
+        normal_size: [],
+      },
       number: 1,
       cart: [],
       img: [],
-      rating: 4,
+      rating: null,
       url:
-        "http://2ac0-2405-4802-b2b6-f4e0-388b-b096-4db6-b2cc.ngrok.io" +
+        "http://5be4-2405-4802-b2d3-84b0-10a4-a4bb-8b73-5290.ngrok.io" +
         this.$route.path,
+      zoomerOptions: {
+        zoomFactor: 3,
+        pane: "pane",
+        hoverDelay: 300,
+        namespace: "zoomer-bottom",
+        move_by_click: false,
+        scroll_items: 4,
+        choosed_thumb_border_color: "#dd2c00",
+        scroller_position: "bottom",
+        zoomer_pane_position: "right",
+      },
     };
   },
   async asyncData({ $axios, route }) {
@@ -228,12 +271,19 @@ export default {
       "http://localhost/blog/public/api/shoe/show/" + id
     );
 
+// const posts = await $axios.$post(
+//       "http://peaceful-lowlands-39014.herokuapp.com/api/shoe/show/" + 5
+//     );
     return { posts };
   },
-  mounted() {
+  beforeMount(){
+    this.imgURL = img.get();
     this.getPosts();
+  },
+  mounted() {
+    
     this.userRating();
-    //console.log(this.posts);
+    console.log(this.posts);
   },
   watch: {
     rating() {
@@ -289,13 +339,35 @@ export default {
       this.loading = true;
       baseRequest.get("image/" + this.$route.params.id).then((response) => {
         this.img = JSON.parse(JSON.stringify(response.data));
-        this.current = this.posts.picture;
-        this.imgs.push(this.posts.picture);
+        let int = 0;
+        this.images.thumbs.push({
+            id: int,
+            url:
+              "http://localhost/blog/public/images/" + this.posts.picture,
+          });
+          this.images.normal_size.push({
+            id: int,
+            url:
+              "http://localhost/blog/public/images/" + this.posts.picture,
+          });
+        // this.current = this.posts.picture;
+        // this.imgs.push(this.posts.picture);
         for (const item in this.img) {
           this.imgs.push(this.img[item].picture);
-          //console.log(this.img[item].picture);
+          int++;
+          this.images.thumbs.push({
+            id: int,
+            url:
+              "http://localhost/blog/public/images/" + this.img[item].picture,
+          });
+          this.images.normal_size.push({
+            id: int,
+            url:
+              "http://localhost/blog/public/images/" + this.img[item].picture,
+          });
+          //console.log(this.images);
         }
-        console.log(this.imgs);
+        console.log(this.images);
       });
     },
     submit: function () {
@@ -322,7 +394,7 @@ export default {
         {
           property: "og:image",
           content:
-            "https://static.wixstatic.com/media/56a444_9273e80a60684dc8b38e56025059f356%7Emv2_d_3200_1800_s_2.png",
+            "https://peaceful-lowlands-39014.herokuapp.com/images/"+this.posts.picture,
         },
 
         {
@@ -380,13 +452,27 @@ body {
 .img-hover-zoom {
   height: auto; /* Modify this according to your need */
   overflow: hidden; /* Removing this will break the effects */
-  box-shadow: 8px 8px white;
-  border-radius:10px;
-  text-shadow: 2px 2px;
+  /* box-shadow: 8px 8px white;
+  border-radius: 10px;
+  text-shadow: 2px 2px; */
 }
 
-img{
-  border-radius:10px;
+
+.responsive-image{
+  box-shadow: 3px 3px whitesmoke;
+  border-radius: 10% !important;
+  width: 500px;
+  height: 400px;
+  margin-bottom: 10px;
+}
+
+.thumb-list{
+  width: 500px !important;
+}
+
+.pane-container{
+  left: 500px !important;
+  border-radius: 10% ;
 }
 
 .img-hover-zoom img {

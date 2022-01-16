@@ -1,89 +1,96 @@
 <template>
   <div class="row pt-4">
-    <div class="col-md-3 border-right">
-      <!-- 
-    <v-list>
-      <v-list-group
-        v-for="item in categories"
-        :key="item.id"
-        v-model="item.active"
-      >
-        <template v-slot:activator>
-          <v-list-item-content>
-            
-            <v-list-item-title v-text="item.content"></v-list-item-title>
-          </v-list-item-content>
-        </template>
-
-        <v-list-item
-          v-for="child in item.child_caregory"
-          :key="child.title"
-        >
-          <v-list-item-content>
-            <NuxtLink :to="'/about?child='+child.id">
-                <v-list-item-title v-text="child.title"></v-list-item-title>
-            </NuxtLink>
-            
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-group>
-    </v-list>
-    -->
-      <v-list class="pb-4 border-bottom" flat>
-        <v-subheader>Danh mục</v-subheader>
-        <v-list-item-group color="primary">
-          <v-list-item v-for="(item, i) in categories" :key="i">
-            <v-list-item-content>
+    <div class="col-md-12 col-lg-3 shadow p-3 mb-5 bg-white rounded">
+      <v-list expand light dense nav>
+        <v-list-group prepend-icon="mdi-book-multiple" :value="true">
+          <template v-slot:activator>
+            <v-list-item-title>Danh muc</v-list-item-title>
+          </template>
+          <v-list-item-group>
+            <v-list-item
+              style="padding-left: 40px"
+              link
+              v-for="(item, i) in categories"
+              :key="i"
+            >
               <NuxtLink
                 :to="{
                   name: 'category-slug',
                   params: { slug: item.content, id: item.id },
                 }"
+                
               >
-                <v-list-item-title v-text="item.content"></v-list-item-title>
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.content"></v-list-item-title>
+                </v-list-item-content>
               </NuxtLink>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list-group>
+
+        <v-list-group :value="true" no-action prepend-icon="mdi-account-circle">
+          <template v-slot:activator>
+            <v-list-item-title>Category</v-list-item-title>
+          </template>
+          <v-list-item-group>
+            <v-list-item
+              style="padding-left: 40px"
+              v-for="item in childcategories"
+              :key="item.id"
+            >
+              <v-list-item-content>
+                <v-list-item-title>
+                  <label class="form-check-label" :for="'category' + item.id">
+                    {{ item.title }}
+                  </label>
+                </v-list-item-title>
+              </v-list-item-content>
+              <input
+                :value="item.id"
+                v-model="selected.child"
+                :id="'category' + item.id"
+                type="checkbox"
+                class="form-check-input"
+              />
+            </v-list-item>
+          </v-list-item-group>
+        </v-list-group>
+        <v-list-group prepend-icon="mdi-cash-multiple" :value="true" no-action>
+          <template v-slot:activator>
+            <v-list-item-title>Price</v-list-item-title>
+          </template>
+          <v-list-item-group>
+            <v-list-item
+              style="padding-left: 40px"
+              v-for="item in prices"
+              :key="'price' + item.id"
+            >
+              <input
+                :value="item.id"
+                v-model="selected.prices"
+                :id="'price' + item.id"
+                type="checkbox"
+                class="form-check-input"
+              />
+              <label class="form-check-label" :for="'price' + item.id">
+                {{ item.title }}
+              </label>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list-group>
+        <div class="v-list-group v-list-group--default v-list-group--no-action">
+          <v-list-item-group>
+            <v-list-item-content>
+              <v-list-item-title>Publisher</v-list-item-title>
             </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
+
+            <v-list-item> </v-list-item>
+          </v-list-item-group>
+        </div>
       </v-list>
-      <h2>Category</h2>
-      <div
-        class="form-check p-2"
-        v-for="item in childcategories"
-        :key="item.id"
-      >
-        <input
-          :value="item.id"
-          v-model="selected.child"
-          :id="'category' + item.id"
-          type="checkbox"
-          class="form-check-input"
-        />
-        <label class="form-check-label" :for="'category' + item.id">
-          {{ item.title }}
-        </label>
-      </div>
-      <h3 class="mt-2">Price</h3>
-      <div
-        class="form-check p-2"
-        v-for="item in prices"
-        :key="'price' + item.id"
-      >
-        <input
-          :value="item.id"
-          v-model="selected.prices"
-          :id="'price' + item.id"
-          type="checkbox"
-          class="form-check-input"
-        />
-        <label class="form-check-label" :for="'price' + item.id">
-          {{ item.title }}
-        </label>
-      </div>
-      <h3 class="mt-2">Publisher</h3>
     </div>
-    <div class="col-md-9">
-      <v-carousel hide-delimiters height="240px">
+    <div class="col-md-12 col-lg-9" style="box-shadow: 0 2.5rem 2rem -2rem hsl(200 50% 20% / 40%);">
+      <v-carousel class="shadow p-3 mb-5 bg-white rounded" hide-delimiters height="240px">
         <v-carousel-item
           v-for="(item, i) in items"
           :key="i"
@@ -114,89 +121,71 @@
         </v-col>
       </div>
       <div class="row">
-        <div class="col-md-4" v-for="product in posts" :key="product.id">
-          <div class="product-grid">
-            <div class="product-image">
+        <div class="col-md-6 col-lg-4" v-for="product in posts" :key="product.id">
+          <div class="card__container">
+            <div class="card__top__section">
+              <img :src="imgURL + product.picture" />
+              <div class="card__top__section__icons">
+                <div>
+                  <i><v-icon dark>mdi-heart</v-icon></i>
+                </div>
+                <div @click="addToCart(product)">
+                  <i><v-icon dark>mdi-shopping</v-icon></i>
+                </div>
+                <div>
+                  <i><v-icon dark>mdi-share</v-icon></i>
+                </div>
+              </div>
+            </div>
+            <div class="card__body__section">
               <nuxt-link
                 :to="{ name: 'product_detail-id', params: { id: product.id } }"
                 class="image"
               >
-                <img
-                  class="pic-1"
-                  :src="
-                    'http://localhost/blog/public/images/' + product.picture
-                  "
-                />
+                <p>{{ product.title }}</p>
               </nuxt-link>
-              <ul class="product-links">
-                <li>
-                  <a href="#"><i class="fa fa-shopping-bag"></i> Add to cart</a>
-                </li>
-                <li>
-                  <a href="#"><i class="fa fa-search"></i> Quick View</a>
-                </li>
-              </ul>
+              <span>A nice blue shirt for men. One size fit all.</span>
             </div>
-            <div class="product-content">
-              <v-rating
-                :value="4.5"
-                color="amber"
-                dense
-                half-increments
-                readonly
-                size="14"
-              ></v-rating>
-              <h3 class="title">
-                <nuxt-link
-                  :to="{
-                    name: 'product_detail-id',
-                    params: { id: product.id },
-                  }"
-                  >{{ product.title }}</nuxt-link
-                >
-              </h3>
-              <div class="price">${{ product.price }}</div>
+            <div>
+              <div class="rating-section">
+                <div class="stars-rating">
+                  <span>{{ product.rating }}</span>
+                  <v-rating
+                    v-model="product.rating"
+                    background-color="#777"
+                    size="18"
+                    color="#f7bc3d"
+                  ></v-rating>
+                </div>
+                <div class="c-price">
+                  <span>$ {{ product.price }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="text-center">
+      <div class="text-center mt-4">
         <v-pagination v-model="currentPage" :length="totalPage"></v-pagination>
       </div>
+      <v-snackbar color="green" v-model="snackbar">
+        {{ snackbarText }}
+        <v-icon green>mdi-checkbox-marked-circle</v-icon>
+        <template v-slot:action="{ attrs }">
+          <v-btn text v-bind="attrs" @click="snackbar = false"> Close </v-btn>
+        </template>
+      </v-snackbar>
     </div>
   </div>
-  <!-- <div class="form-group">
-        <select class="custom-select" v-model="selected.orders" id="">
-          <option v-for="(item, index) in orders" :key="index" :value="index">
-            {{ item.name }}
-          </option>
-        </select>
-      </div>
-<div>
-            <nuxt-link
-              :to="{ name: 'product_detail-id', params: { id: product.id } }"
-            >
-              <img
-                height="70px"
-                width="100px"
-                :src="'https://localhost/blog/public/images/' + product.picture"
-                alt="Italian Trulli"
-              />
-            </nuxt-link>
-            <div>
-              <p><span>Name </span>{{ product.title }}</p>
-              <p v-text="product.category"></p>
-            </div>
-            <div>
-              <h3>price {{ product.price }}</h3>
-            </div>
-          </div>
---></template>
+</template>
 <script>
+import img from "~/store/img";
 import baseRequest from "~/store/baseRequest";
 export default {
   data() {
     return {
+      snackbar: false,
+      snackbarText: "",
       rating: 4,
       items: [
         {
@@ -270,6 +259,7 @@ export default {
     if (this.$route.query.tl != null) {
       this.selected.categories.push(this.$route.query.tl);
     }
+    this.imgURL = img.get();
     // if (this.$route.query.child != null) {
     //   this.selected.child.push(this.$route.query.child);
     // }
@@ -305,6 +295,14 @@ export default {
   //   // return { post2,posts };
   // },
   methods: {
+    addToCart(product) {
+      this.cart = product;
+      this.cart.quantity = 1;
+      //console.log(this.cart);
+      this.snackbar = true;
+      this.snackbarText = "Add product " + product.title + " to cart";
+      this.$store.commit("addToCart", this.cart);
+    },
     close(selection) {
       if (selection.id == 0) {
         let index_category = this.selected.child.findIndex(
@@ -437,172 +435,134 @@ export default {
 };
 </script>
 <style>
-.product-grid:hover {
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+.container {
+  padding: 15px 0px !important;
+}
+.v-list__group--active {
+  border-left: 1px solid red;
+}
+*,
+*::before,
+*::after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-.product-grid .product-content {
-  text-align: center;
-  padding: 15px 10px;
-}
-.product-grid .v-rating {
-  padding: 0;
-  margin: 0 0 7px;
-  list-style: none;
-}
-.product-grid .v-rating div {
-  color: #f7bc3d;
-  font-size: 13px;
-}
-.product-grid .rating li.far {
-  color: #777;
-}
-.product-grid .title {
-  font-size: 16px;
-  font-weight: 600;
-  text-transform: capitalize;
-  margin: 0 0 6px;
-}
-.product-grid .title a {
-  color: #555;
-  text-decoration: none;
-  transition: all 0.3s ease 0s;
-}
-.product-grid .title a:hover {
-  color: #ed1d24;
-}
-.product-grid .price {
-  color: #ed1d24;
-  font-size: 18px;
-  font-weight: 700;
-}
 .v-input {
   width: 30%;
 }
-.product-grid {
-  font-family: "Poppins", sans-serif;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.product-grid .product-image {
-  position: relative;
-}
-.product-grid .product-image a.image {
-  display: block;
-}
-.product-grid .product-image img {
+
+img {
   width: 100%;
-  height: 220px;
-  transition: all 0.3s ease 0s;
-}
-.product-grid .product-image:hover img {
-  transform: translate(10px, -10px);
-}
-.product-grid .product-sale-label {
-  color: #fff;
-  background: #1abc9c;
-  font-size: 13px;
-  text-transform: capitalize;
-  line-height: 35px;
-  width: 55px;
-  height: 35px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  animation: bg-animate 5s infinite linear;
-}
-.product-grid .product-links {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  bottom: 15px;
-  left: 20px;
-  transition: all 0.3s ease 0s;
-}
-.product-grid:hover .product-links {
-  opacity: 1;
-}
-.product-grid .product-links li {
-  margin: 0 0 5px;
-  opacity: 0;
-  transform: translateX(-100%);
-  transition: all 0.3s ease 0s;
-}
-.product-grid:hover .product-links li:nth-child(2) {
-  transition: all 0.3s ease 0.15s;
-}
-.product-grid:hover .product-links li {
-  opacity: 1;
-  transform: translateX(0);
-}
-.product-grid .product-links li a {
-  color: #fff;
-  background-color: #00b894;
-  font-size: 14px;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
-  padding: 8px 10px;
+  position: relative;
+
   display: block;
-  opacity: 0.9;
-  transition: all 0.3s ease 0s;
-  animation: bg-animate 5s infinite linear;
-}
-.product-grid .product-links li a:hover {
-  color: #fff;
-  text-decoration: none;
-  box-shadow: 0 0 0 3px #fff inset;
-  opacity: 1;
-}
-.product-grid .product-links li a i {
-  margin: 0 5px 0 0;
+  border-radius: inherit;
 }
 
-@keyframes color-animate {
-  0% {
-    color: #00b894;
-  }
-  20% {
-    color: #00cec9;
-  }
-  40% {
-    color: #0984e3;
-  }
-  60% {
-    color: #6c5ce7;
-  }
-  80% {
-    color: #e84393;
-  }
-  100% {
-    color: #00b894;
-  }
+.card__container {
+  width: 260px;
+  background-color: #fff;
+  -webkit-box-shadow: 0 2.5rem 2rem -2rem hsl(200 50% 20% / 40%);
+  box-shadow: 0 2.5rem 2rem -2rem hsl(200 50% 20% / 40%);
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 2px;
+  /* position: relative; */
+  top: 30px;
+  margin-bottom: 60px;
+  height: 90%;
 }
-@keyframes bg-animate {
-  0% {
-    background-color: #00b894;
-  }
-  20% {
-    background-color: #00cec9;
-  }
-  40% {
-    background-color: #0984e3;
-  }
-  60% {
-    background-color: #6c5ce7;
-  }
-  80% {
-    background-color: #e84393;
-  }
-  100% {
-    background-color: #00b894;
-  }
+
+.card__top__section {
+  background: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#64c1ff),
+    to(#0064b7)
+  );
+  background: -o-linear-gradient(left, #64c1ff, #0064b7);
+  background: linear-gradient(to right, #64c1ff, #0064b7);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 0 0;
+  height: 220px;
+  width: 100%;
+  padding: 10px 0px 0px 0px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
-@media screen and (max-width: 1200px) {
-  .product-grid {
-    margin: 0 0 30px;
+
+.card__top__section__icons > div {
+  width: 38px;
+  height: 38px;
+  background-color: rgb(83, 64, 64);
+  border-radius: 50%;
+  /* z-index: 100; */
+  position: relative;
+  left: -48px;
+  margin-bottom: 10px;
+  display: table;
+}
+
+.card__top__section__icons > div:hover {
+  background-color: rgb(169, 197, 46);
+  transform: scale(1.5);
+}
+
+.card__top__section__icons > div > i {
+  vertical-align: middle;
+  text-align: center;
+  display: table-cell;
+  color: #454545;
+  font-size: 16px;
+}
+
+.card__body__section {
+  text-align: center;
+  padding: 8px 5px;
+}
+
+.card__body__section > p {
+  font-weight: 700;
+}
+
+.rating-section {
+  border-top: 1px solid #eee;
+  padding: 8px 12px;
+  margin-top: 5px;
+  display: table;
+  margin-bottom: 20px;
+  clear: both;
+  width: 100%;
+}
+
+.rating-with-color {
+  color: #ffa500;
+}
+
+.stars-rating {
+  float: left;
+}
+
+.stars-rating > span {
+  font-size: small;
+}
+
+.c-price {
+  padding-top: 5px;
+  float: right;
+}
+
+@media screen and (max-width: 450px) {
+  .card__container {
+    width: 90% !important;
+    
+    left: 27px;
   }
 }
 </style>

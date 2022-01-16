@@ -76,12 +76,18 @@ import category from "./components/admin/datatable_category.vue";
 import product from "./components/admin/product.vue";
 import product_image from "./components/product_image.vue";
 import Nav from "./components/nav_header";
+import WebApi from "./components/webapi.vue";
 
 const routes = [
   {
     path: "/login",
     component: login,
     name: "Login",
+  },
+  {
+    path: "/webapi",
+    component: WebApi,
+    name: "WebApi",
   },
   {
     path: "/Nav",

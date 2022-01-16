@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
+using WebApi.Models.Seed;
 
 namespace WebApi
 {
@@ -72,7 +73,7 @@ namespace WebApi
             //services.AddScoped<ICategoryData, MockCategoryData>();
             services.AddCors(c =>
             {
-                c.AddPolicy("AllowOrigin", option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+                c.AddPolicy("AllowOrigin", option => option.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("X-Pagination"));
             });
 
             services.AddControllersWithViews().AddNewtonsoftJson(option =>
@@ -81,6 +82,8 @@ namespace WebApi
 
             services.AddControllers();
             services.AddAutofac();
+
+            services.AddTransient<admin_user>();
 
         }
 
@@ -91,14 +94,16 @@ namespace WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, admin_user seeder)
         {
+            seeder.SeedAdminUser();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                
             }
 
-            app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("X-Pagination"));
 
             app.UseStaticFiles();// For the wwwroot folder
 

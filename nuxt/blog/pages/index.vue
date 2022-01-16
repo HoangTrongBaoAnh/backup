@@ -1,568 +1,288 @@
 <template>
-  <div class="row pt-4">
-    <div class="col-md-3 border-right">
-    <v-list>
-      <v-list-group
-        v-for="item in categories"
-        :key="item.id"
-        v-model="item.active"
-      >
-        <template v-slot:activator>
-          <v-list-item-content>
-            <v-list-item-title v-text="item.content"></v-list-item-title>
-          </v-list-item-content>
-        </template>
-
-        <v-list-item
-          v-for="child in item.child_caregory"
-          :key="child.title"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="child.title"></v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-group>
-    </v-list>
-      <h2 class="pb-4 border-bottom">Category</h2>
-      <div class="form-check p-2" v-for="item in categories" :key="item.id">
-        <input
-          :value="item.id"
-          v-model="selected.categories"
-          :id="'category' + item.id"
-          type="checkbox"
-          class="form-check-input"
-        />
-        <label class="form-check-label" :for="'category' + item.id">
-          {{ item.content }} ({{ item.shoe_count }})
-        </label>
-      </div>
-      <h3 class="pb-4 border-bottom">Price</h3>
-      <div class="form-check p-2" v-for="item in prices" :key="'price' + item.id">
-        <input
-          :value="item.id"
-          v-model="selected.prices"
-          :id="'price' + item.id"
-          type="checkbox"
-          class="form-check-input"
-        />
-        <label class="form-check-label" :for="'price' + item.id">
-          {{ item.content }}
-        </label>
-      </div>
-      <h3 class="pb-4 border-bottom">Publisher</h3>
-    </div>
-    <div class="col-md-9">
-      <v-carousel hide-delimiters height="240px">
+  <div id="main">
+    <div class="row row-full">
+      <v-carousel height="600px">
         <v-carousel-item
-          v-for="(item,i) in items"
+          v-for="(item, i) in items"
           :key="i"
           :src="item.src"
         ></v-carousel-item>
       </v-carousel>
-      <v-select
-      class="pt-4"
-        v-model="selected.orders"
-        :menu-props="{ bottom: true, offsetY: true }"
-        solo
-        item-text="name"
-        :items="orders"
-        item-value="id"
-        :selected="selected.orders"
-      >
-      </v-select>
-      <div class="row">
-        <v-col
-          v-for="(selection, i) in selections"
-          :key="i"
-          class="mb-6 shrink"
-        >
-          <v-chip :disabled="loading" close @click:close="close(selection)">
-            {{ selection.content.content }}
-          </v-chip>
-        </v-col>
+    </div>
+    <div>
+      <div class="text-center">
+        <p>Best Sale Product</p>
       </div>
-      <div class="row">
-        <div class="col-md-4" v-for="product in posts" :key="product.id">
-          <div class="product-grid">
-            <div class="product-image">
+      <div>
+        <div class="row">
+          <div class="col-3" v-for="item in products" :key="item.id">
+            <v-card class="mx-auto my-12" max-width="374">
+              <template slot="progress">
+                <v-progress-linear
+                  color="deep-purple"
+                  height="10"
+                  indeterminate
+                ></v-progress-linear>
+              </template>
               <nuxt-link
-                :to="{ name: 'product_detail-id', params: { id: product.id } }"
-                class="image"
+                :to="{ name: 'product_detail-id', params: { id: item.id } }"
               >
-                <img
-                  class="pic-1"
-                  :src="
-                    'http://localhost/blog/public/images/' + product.picture
-                  "
-                />
+                <v-img
+                  height="250"
+                  :src="'http://localhost/blog/public/images/' + item.picture"
+                ></v-img>
               </nuxt-link>
-              <ul class="product-links">
-                <li>
-                  <a href="#"><i class="fa fa-shopping-bag"></i> Add to cart</a>
-                </li>
-                <li>
-                  <a href="#"><i class="fa fa-search"></i> Quick View</a>
-                </li>
-              </ul>
-            </div>
-            <div class="product-content">
-              <v-rating
-                v-model="product.rating"
-                background-color="#777"
-                color="#f7bc3d"
-              ></v-rating>
-              <h3 class="title">
-                <nuxt-link
-                  :to="{
-                    name: 'product_detail-id',
-                    params: { id: product.id }
-                  }"
-                  >{{ product.title }}</nuxt-link
+
+              <v-card-title>{{ item.title }}</v-card-title>
+
+              <v-card-text>
+                <v-row align="center" class="mx-0">
+                  <v-rating
+                    :value="4.5"
+                    color="amber"
+                    dense
+                    half-increments
+                    readonly
+                    size="14"
+                  ></v-rating>
+
+                  <div class="grey--text ms-4">4.5 (413)</div>
+                </v-row>
+
+                <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
+
+                <div>
+                  Small plates, salads & sandwiches - an intimate setting with
+                  12 indoor seats plus patio seating.
+                </div>
+              </v-card-text>
+
+              <v-divider class="mx-4"></v-divider>
+
+              <v-card-actions>
+                <v-btn
+                  color="deep-purple lighten-2"
+                  text
+                  @click="$store.commit('addToCart', item)"
                 >
-              </h3>
-              <div class="price">${{ product.price }}</div>
-            </div>
+                  Reserve
+                </v-btn>
+              </v-card-actions>
+            </v-card>
           </div>
         </div>
-      </div>
-      <div class="text-center pt-4">
-        <v-pagination v-model="currentPage" :length="totalPage"></v-pagination>
+        <div class="mx-auto">
+          <v-lazy
+            v-model="isActive"
+            :options="{
+              threshold: 0.8,
+            }"
+            min-height="200"
+            transition="scroll-y-transition"
+          >
+            <div class="row">
+              <div class="col-4" v-for="n in 3" :key="n">
+                <v-card class="mx-auto" max-width="336">
+                  <v-card-title>Card title</v-card-title>
+
+                  <v-card-text>
+                    Phasellus magna. Quisque rutrum. Nunc egestas, augue at
+                    pellentesque laoreet, felis eros vehicula leo, at malesuada
+                    velit leo quis pede. Aliquam lobortis. Quisque libero metus,
+                    condimentum nec, tempor a, commodo mollis, magna. In turpis.
+                    In dui magna, posuere eget, vestibulum et, tempor auctor,
+                    justo. In turpis. Pellentesque dapibus hendrerit tortor. Ut
+                    varius tincidunt libero.
+                  </v-card-text>
+                </v-card>
+              </div>
+            </div>
+          </v-lazy>
+        </div>
+        <div class="mx-auto m-4">
+          <v-tabs
+            v-model="tab"
+            background-color="transparent"
+            color="basil"
+            grow
+          >
+            <v-tab
+              v-for="item in categories"
+              :key="item.id"
+              @click="changeTab(item.id)"
+            >
+              {{ item.title }}
+            </v-tab>
+          </v-tabs>
+
+          <v-tabs-items v-model="tab">
+            <v-tab-item v-for="item in categories" :key="item.id">
+              <v-slide-group class="mySlider pa-4" show-arrows color="dark">
+                <v-slide-item v-for="n in products_ca" :key="n.id">
+                  <v-card class="ma-4" width="250">
+                    <nuxt-link
+                      :to="{
+                        name: 'product_detail-id',
+                        params: { id: n.id },
+                      }"
+                    >
+                      <v-img
+                        height="200"
+                        :src="
+                          'http://localhost/blog/public/images/' + n.picture
+                        "
+                      ></v-img>
+                    </nuxt-link>
+
+                    <v-card-title>{{ n.title }}</v-card-title>
+
+                    <v-card-text>
+                      <v-row align="center" class="mx-0">
+                        <v-rating
+                          :value="4.5"
+                          color="amber"
+                          dense
+                          half-increments
+                          readonly
+                          size="14"
+                        ></v-rating>
+
+                        <div class="grey--text ms-4">4.5 (413)</div>
+                      </v-row>
+
+                      <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
+
+                      <div>
+                        Small plates, salads & sandwiches - an intimate setting
+                        with 12 indoor seats plus patio seating.
+                      </div>
+                    </v-card-text>
+
+                    <v-divider class="mx-4"></v-divider>
+
+                    <v-card-actions>
+                      <v-btn
+                        color="deep-purple lighten-2"
+                        text
+                        @click="$store.commit('addToCart', n)"
+                      >
+                        BUY
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-slide-item>
+              </v-slide-group>
+            </v-tab-item>
+          </v-tabs-items>
+        </div>
+
+        <v-slide-group class="pa-4" show-arrows>
+          <v-slide-item v-for="n in 15" :key="n">
+            <v-img
+              lazy-src="https://picsum.photos/id/11/10/6"
+              height="100"
+              width="100"
+              class="ma-4"
+              src="https://picsum.photos/id/11/500/300"
+            ></v-img>
+          </v-slide-item>
+        </v-slide-group>
       </div>
     </div>
-    <v-snackbar
-      v-model="snackbar"
-      :timeout="timeout"
-    >
-      Login successfuly<v-icon
-          green
-          right
-        >
-          mdi-checkbox-marked-circle
-        </v-icon>
-      
-
-      <template v-slot:action="{ attrs }">
-        <v-btn
-          color="blue"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </div>
-  <!-- <div class="form-group">
-        <select class="custom-select" v-model="selected.orders" id="">
-          <option v-for="(item, index) in orders" :key="index" :value="index">
-            {{ item.name }}
-          </option>
-        </select>
-      </div>
-<div>
-            <nuxt-link
-              :to="{ name: 'product_detail-id', params: { id: product.id } }"
-            >
-              <img
-                height="70px"
-                width="100px"
-                :src="'https://localhost/blog/public/images/' + product.picture"
-                alt="Italian Trulli"
-              />
-            </nuxt-link>
-            <div>
-              <p><span>Name </span>{{ product.title }}</p>
-              <p v-text="product.category"></p>
-            </div>
-            <div>
-              <h3>price {{ product.price }}</h3>
-            </div>
-          </div>
--->
 </template>
 <script>
 import baseRequest from "~/store/baseRequest";
 export default {
   data() {
     return {
-      snackbar: false,
-      rating: 4,
-      childs:[],
+      tab: null,
+
       items: [
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-          },
-          {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-          },
-        ],
-      posts: [],
-      loading: false,
-      currentPage: 1,
-      totalPage: 0,
-      categories: [],
-      publishers: [],
-      prices: [
         {
-          id: 0,
-          content: "less than 50"
+          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
         },
         {
-          id: 1,
-          content: "50 -> 100"
+          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
         },
         {
-          id: 2,
-          content: "more than 100"
-        }
+          src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
+        },
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+        },
       ],
-      orders: [
-        {
-          id: 0,
-          name: "lasted upload"
-        },
-        {
-          id: 1,
-          name: "A->Z"
-        },
-        {
-          id: 2,
-          name: "Oldest upload"
-        }
-      ],
-      selected: {
-        prices: [],
-        categories: [],
-        publishers: [],
-        orders: 2
-      }
+      products: [],
+      isActive: false,
+      img: [],
+      products_ca: [],
     };
   },
+  async asyncData({ $axios, route }) {
+    //const { id } = route.params;
+    //console.log(id);
+    const categories_pa = await $axios.$get(
+      "http://localhost/blog/public/api/category"
+    );
+    const categories = await $axios.$get(
+      "http://localhost/blog/public/api/childcategory/" + categories_pa[0].id
+    );
+    return { categories, categories_pa };
+  },
   mounted() {
-    this.snackbar = this.$route.params.snackbar;
-    this.loadProducts();
-    this.loadCategories();
-  },
-  watch: {
-    currentPage() {
-      this.loadProducts();
-    },
-    selected: {
-      handler: function() {
-        this.loadProducts();
-        this.loadCategories();
-        this.currentPage = 1;
-        //console.log(this.selected);
-      },
-      deep: true
-    }
-  },
-  // async asyncData({ $axios }) {
-  //   // const post2 = await $axios.$get(
-  //   //   "http://localhost/blog/public/api/shoe?page=1"
-  //   // ).then((res) => {
-  //   //   return { posts: res.data.data }
-  //   // });
+    this.getProducts();
+    // this.getPosts();
 
-  //   // return { post2,posts };
-  // },
+    this.changeTab(this.categories[0].id);
+  },
   methods: {
-    close(selection) {
-      if (selection.id == 0) {
-        let index_category = this.selected.categories.findIndex(
-          x => x == selection.content.id
-        );
-        //console.log(this.selected.categories);
-        //console.log(index_category);
-        this.selected.categories.splice(index_category, 1);
-        return;
-      }
-      let index_price = this.selected.prices.findIndex(
-        x => x == selection.content.id
-      );
-      //console.log(index_price);
-      this.selected.prices.splice(index_price, 1);
-    },
-    getChildCategory: function (id) {
-            this.loading = true;
-            baseRequest.get("childcategory/"+id)
-            .then((response) => {
-                this.childs = response.data;
-                console.log(this.childs);
-            });
-        },
-    // additem(item) {
-    //   if (
-    //     this.selected.categories.filter(e => e.id === item.id).length > 0
-    //   ) {
-    //     let index = this.selected.categories.findIndex(
-    //       x => x.id === item.id
-    //     );
-    //     this.selected.categories.splice(index, 1);
-    //     return;
-    //   }
-    //   //console.log(this.selected.categories.includes(item));
-    //   this.selected.categories.push(item);
-    // },
-    async getPosts() {
-      const ip = await this.$axios.$get(
-        "http://localhost/blog/public/api/shoe?page=" + this.currentPage
-      );
-      this.posts = ip.data;
-      this.totalPage = ip.last_page;
-      console.log(this.posts);
-    },
-    loadProducts: function() {
+    changeTab: function (id) {
       let data = new FormData();
-      data.append("categories", this.selected.categories.id);
-      //console.log(this.selected.categories.map(x => x.id));
-      data.append("prices", this.selected.prices);
-      data.append("publishers", this.selected.publishers);
-      this.$axios
-        .$get(
-          "http://localhost/blog/public/api/shoe?page=" + this.currentPage,
-          {
-            params: {
-              categories: this.selected.categories,
-              prices: this.selected.prices,
-              orders: this.selected.orders
-              //publishers: this.selected.publishers,
-            }
-          }
-        )
-        .then(response => {
-          //console.log(this.selections);
-          this.posts = response.data;
-          this.totalPage = response.last_page;
-          //this.loading = false;
+      data.append("id", id);
+      baseRequest
+        .post("shoe/childCategory", data)
+        .then((response) => {
+          this.products_ca = response.data;
+          //console.log(this.childcategories);
         })
-        .catch(function(error) {
-          console.log(error);
+        .catch((errors) => {
+          console.log(errors);
         });
     },
-    loadCategories: function() {
-      this.$axios
-        .$get("http://localhost/blog/public/api/category", {
-          params: {
-            categories: this.selected.categories
-          }
+    // getPosts: function () {
+    //   this.loading = true;
+    //   baseRequest.get("childcategory/" + 1).then((response) => {
+    //     this.img = response.data;
+    //     //console.log(this.img);
+    //   });
+    // },
+    getProducts: function () {
+      baseRequest
+        .get("shoe/bestSaleProduct")
+        .then((response) => {
+          this.products = response.data;
+          //console.log(this.childcategories);
         })
-        .then(response => {
-          //console.log(response);
-          this.categories = response;
-        })
-        .catch(function(error) {
-          console.log(error);
+        .catch((errors) => {
+          console.log(errors);
         });
-    }
-    // async loadCategories() {
-    //   const cat = (
-    //     await this.$axios.$get("http://localhost/blog/public/api/category")
-    //   )
-    //     .then(res => {
-    //       this.categories = cat;
-    //       console.log(res);
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-
-    //   console.log(this.categories);
-    // }
+    },
   },
-  computed: {
-    selections() {
-      const selections = [];
-
-      for (const selection of this.selected.categories) {
-        let index = this.categories.findIndex(x => x.id == selection);
-        selections.push({ id: 0, content: this.categories[index] });
-      }
-
-      for (const selection of this.selected.prices) {
-        let index = this.prices.findIndex(x => x.id == selection);
-        selections.push({ id: 1, content: this.prices[index] });
-      }
-
-      return selections;
-    }
-  }
 };
 </script>
 <style>
-.product-grid:hover {
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+* {
+  text-decoration: none !important;
 }
-
-.product-grid .product-content {
-  text-align: center;
-  padding: 15px 10px;
+.mySlider{
+  background-color:#B9B8B1;
 }
-.product-grid .v-rating {
-  padding: 0;
-  margin: 0 0 7px;
-  list-style: none;
-}
-.product-grid .v-rating div {
-  color: #f7bc3d;
-  font-size: 13px;
-}
-.product-grid .rating li.far {
-  color: #777;
-}
-.product-grid .title {
-  font-size: 16px;
-  font-weight: 600;
-  text-transform: capitalize;
-  margin: 0 0 6px;
-}
-.product-grid .title a {
-  color: #555;
-  text-decoration: none;
-  transition: all 0.3s ease 0s;
-}
-.product-grid .title a:hover {
-  color: #ed1d24;
-}
-.product-grid .price {
-  color: #ed1d24;
-  font-size: 18px;
-  font-weight: 700;
-}
-.v-input {
-  width: 30%;
-}
-.product-grid {
-  font-family: "Poppins", sans-serif;
-  text-align: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.product-grid .product-image {
+.row-full {
+  width: 100vw;
   position: relative;
-}
-.product-grid .product-image a.image {
-  display: block;
-}
-.product-grid .product-image img {
-  width: 100%;
-  height: 220px;
-  transition: all 0.3s ease 0s;
-}
-.product-grid .product-image:hover img {
-  transform: translate(10px, -10px);
-}
-.product-grid .product-sale-label {
-  color: #fff;
-  background: #1abc9c;
-  font-size: 13px;
-  text-transform: capitalize;
-  line-height: 35px;
-  width: 55px;
-  height: 35px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  animation: bg-animate 5s infinite linear;
-}
-.product-grid .product-links {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  bottom: 15px;
-  left: 20px;
-  transition: all 0.3s ease 0s;
-}
-.product-grid:hover .product-links {
-  opacity: 1;
-}
-.product-grid .product-links li {
-  margin: 0 0 5px;
-  opacity: 0;
-  transform: translateX(-100%);
-  transition: all 0.3s ease 0s;
-}
-.product-grid:hover .product-links li:nth-child(2) {
-  transition: all 0.3s ease 0.15s;
-}
-.product-grid:hover .product-links li {
-  opacity: 1;
-  transform: translateX(0);
-}
-.product-grid .product-links li a {
-  color: #fff;
-  background-color: #00b894;
-  font-size: 14px;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
-  padding: 8px 10px;
-  display: block;
-  opacity: 0.9;
-  transition: all 0.3s ease 0s;
-  animation: bg-animate 5s infinite linear;
-}
-.product-grid .product-links li a:hover {
-  color: #fff;
-  text-decoration: none;
-  box-shadow: 0 0 0 3px #fff inset;
-  opacity: 1;
-}
-.product-grid .product-links li a i {
-  margin: 0 5px 0 0;
-}
-
-@keyframes color-animate {
-  0% {
-    color: #00b894;
-  }
-  20% {
-    color: #00cec9;
-  }
-  40% {
-    color: #0984e3;
-  }
-  60% {
-    color: #6c5ce7;
-  }
-  80% {
-    color: #e84393;
-  }
-  100% {
-    color: #00b894;
-  }
-}
-@keyframes bg-animate {
-  0% {
-    background-color: #00b894;
-  }
-  20% {
-    background-color: #00cec9;
-  }
-  40% {
-    background-color: #0984e3;
-  }
-  60% {
-    background-color: #6c5ce7;
-  }
-  80% {
-    background-color: #e84393;
-  }
-  100% {
-    background-color: #00b894;
-  }
-}
-@media screen and (max-width: 1200px) {
-  .product-grid {
-    margin: 0 0 30px;
-  }
+  margin-left: -50vw;
+  height: 100px;
+  margin-bottom: 50%;
+  left: 49%;
 }
 </style>

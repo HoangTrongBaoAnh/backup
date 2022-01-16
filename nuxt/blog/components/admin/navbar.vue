@@ -47,7 +47,8 @@ export default {
       baseRequest
         .post("logout")
         .then((response) => {
-          this.$router.push({ name: "Login" });
+          localStorage.removeItem('token');
+          this.$router.push({ name: "login" });
           console.log(response.data);
         })
         .catch(() => {});

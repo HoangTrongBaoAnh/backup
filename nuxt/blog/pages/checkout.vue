@@ -36,15 +36,15 @@
 const axios = require("axios");
 
 //import { returnTodaysWeather } from '../order.js'
-import baseRequest from "../store/baseRequest";
+import baseRequest from "~/store/baseRequest";
 export default {
   data() {
     return {
       user: [],
       item: [],
       urlaaa: [],
-      notifyurl:"",
-      cart1:[],
+      notifyurl: "",
+      cart1: [],
       loaded: false,
       paidFor: false,
       product: {
@@ -57,14 +57,13 @@ export default {
   // watch: function(){
   //   this.$route.query.status;
   // },
-  mounted: function() {
+  mounted: function () {
     this.CheckedLogin();
     //this.thanhtoan();
     //console.log(this.usersss);
     this.notifyurl = this.$route.query.errorCode;
-    if(this.notifyurl == 0){
-      
-      this.$store.commit('updateCart', [])
+    if (this.notifyurl == 0) {
+      this.$store.commit("updateCart", []);
       let data = new FormData();
       data.append("user_id", this.usersss.id);
       data.append("total", this.orderTotal);
@@ -73,8 +72,8 @@ export default {
         .post("order/create", data)
         .then((response) => {
           console.log(response);
-          this.$store.commit('updateOrder', [])
-          this.$router.push(this.$route.path)
+          this.$store.commit("updateOrder", []);
+          this.$router.push(this.$route.path);
           //this.loading = false;
           //this.getPosts();
         })
@@ -88,11 +87,11 @@ export default {
       "https://www.paypal.com/sdk/js?client-id=ATqr2hBpKcK-1HGCAK9RUT-jeTegvDMsNIgZI5jR7f1p_9gC2nBo5jHePa4P_rBHh3PCipqLk6eTwmzA";
     script.addEventListener("load", this.setLoaded);
     document.body.appendChild(script);
-    
+
     this.save();
   },
   methods: {
-    thanhtoan: function() {
+    thanhtoan: function () {
       var endpoint =
         "https://test-payment.momo.vn/gw_payment/transactionProcessor";
       //var hostname = "https://test-payment.momo.vn";
@@ -159,25 +158,25 @@ export default {
         .post(endpoint, body)
         .then((response) => {
           window.location.href = response.data.payUrl;
-          console.log(response.data.payUrl);
+          console.log(response);
           //this.urlaaa = response.data.payUrl;
-          this.$store.commit('updateOrder', this.cart)
-          
-          console.log(this.order);
-          axios.post(notifyurl, body)
-          .then(function (response) {
-            console.log(response);
-            
-          })
-          .catch(function (error) {
-            console.log(error.message);
-          });
+          this.$store.commit("updateOrder", this.cart);
+
+          //console.log(this.order);
+          // axios
+          //   .post(notifyurl, body)
+          //   .then(function (response) {
+          //     //console.log(response);
+          //   })
+          //   .catch(function (error) {
+          //     console.log(error.message);
+          //   });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log(error.message);
         });
     },
-    setLoaded: function() {
+    setLoaded: function () {
       this.loaded = true;
       window.paypal
         .Buttons({
@@ -207,7 +206,7 @@ export default {
         })
         .render(this.$refs.paypal);
     },
-    CheckedLogin: function() {
+    CheckedLogin: function () {
       baseRequest
         .get("user")
         .then((response) => {
@@ -215,10 +214,10 @@ export default {
           //console.log(this.user);
         })
         .catch(() => {
-          this.$router.push({ name: "Login" });
+          this.$router.push({ name: "login" });
         });
     },
-    purchase: function() {
+    purchase: function () {
       //console.log( this.user.name + " Mua " + this.cartQuantity + " sản phẩm với giá " + this.cartTotal);
       let data = new FormData();
       data.append("user_id", this.user.id);
@@ -235,7 +234,7 @@ export default {
           console.log(error);
         });
     },
-    save: function() {
+    save: function () {
       this.cart.forEach((i) => {
         console.log(
           "{name:'" + i.title + "',description :'" + i.content + "',},"

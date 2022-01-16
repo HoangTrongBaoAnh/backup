@@ -22,7 +22,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: "~/plugins/persistedstate.js", ssr: false }],
+  plugins: [{ src: "~/plugins/persistedstate.js", ssr: false },{src: '~plugins/zoom', ssr: false}],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -37,8 +37,11 @@ export default {
   modules: ["@nuxtjs/axios", "@nuxtjs/proxy", "bootstrap-vue/nuxt"],
 
   axios: {
+    proxyHeaders: false,
+    credentials: false,
     proxy: true
   },
+
 
   bootstrapVue: {
     bootstrapCSS: false,

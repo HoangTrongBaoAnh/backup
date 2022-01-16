@@ -57,7 +57,7 @@ namespace WebApi.Controllers
 
             //var user = _userManager.Users.ToList();
             var xx = await _userManager.FindByIdAsync(jti);
-
+            var role = _userManager.GetRolesAsync(xx);
             return Ok(xx);
         }
 

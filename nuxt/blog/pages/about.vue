@@ -189,6 +189,13 @@
         </v-slide-group>
       </div>
     </div>
+    <v-snackbar color="green" v-model="snackbar">
+        {{ snackbarText }}
+        <v-icon green>mdi-checkbox-marked-circle</v-icon>
+        <template v-slot:action="{ attrs }">
+          <v-btn text v-bind="attrs" @click="snackbar = false"> Close </v-btn>
+        </template>
+      </v-snackbar>
   </div>
 </template>
 <script>
@@ -197,7 +204,8 @@ export default {
   data() {
     return {
       tab: null,
-
+      snackbar: false,
+      snackbarText: "",
       items: [
         {
           src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",

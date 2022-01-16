@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MTU\\source\\repos\\WebApi\\WebApi\\WebApi.csproj": {}
+    "C:\\Users\\Bao Anh\\Desktop\\backup\\WebApi\\WebApi\\WebApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MTU\\source\\repos\\WebApi\\WebApi\\WebApi.csproj": {
+    "C:\\Users\\Bao Anh\\Desktop\\backup\\WebApi\\WebApi\\WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MTU\\source\\repos\\WebApi\\WebApi\\WebApi.csproj",
+        "projectUniqueName": "C:\\Users\\Bao Anh\\Desktop\\backup\\WebApi\\WebApi\\WebApi.csproj",
         "projectName": "WebApi",
-        "projectPath": "C:\\Users\\MTU\\source\\repos\\WebApi\\WebApi\\WebApi.csproj",
-        "packagesPath": "C:\\Users\\MTU\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MTU\\source\\repos\\WebApi\\WebApi\\obj\\",
+        "projectPath": "C:\\Users\\Bao Anh\\Desktop\\backup\\WebApi\\WebApi\\WebApi.csproj",
+        "packagesPath": "C:\\Users\\Bao Anh\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Bao Anh\\Desktop\\backup\\WebApi\\WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\MTU\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Bao Anh\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -93,6 +93,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.21, 3.1.21]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -101,7 +119,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

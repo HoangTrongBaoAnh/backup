@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <Nav />
-    <v-main style="padding-bottom:300px;background-color: #B9B8B1;color:#fff">
+    <v-main style="padding-bottom:300px">
       <v-container>
         <Breadcrumb />
         <Nuxt />
