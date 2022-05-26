@@ -9,7 +9,7 @@
         <v-list-item>
           <v-list-item-avatar size="100">
             <img
-              :src="'http://localhost/blog/public/images/' + user.picture"
+              :src="user.picture"
               alt="John"
             />
           </v-list-item-avatar>

@@ -19,7 +19,9 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: [
+    '~assets/scss/_variables.scss'
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [{ src: "~/plugins/persistedstate.js", ssr: false },{src: '~plugins/zoom', ssr: false}],
@@ -30,16 +32,23 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
-    "@nuxtjs/vuetify"
+    "@nuxtjs/vuetify",
+    '@nuxtjs/style-resources',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxtjs/axios", "@nuxtjs/proxy", "bootstrap-vue/nuxt"],
 
+  styleResources: {
+    scss: ['./assets/scss/*.scss']
+  },
+
+
   axios: {
     proxyHeaders: false,
     credentials: false,
-    proxy: true
+    proxy: true,
+    
   },
 
 
@@ -55,5 +64,8 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {}
+  build: {
+    extend(config, ctx) {},
+ babel: { compact: true }
+  }
 };

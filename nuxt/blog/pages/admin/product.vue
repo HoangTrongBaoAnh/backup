@@ -147,7 +147,7 @@
               height="70px"
               width="100px"
               v-bind:src="
-                'http://localhost/blog/public/images/' + desserts.item.picture
+                desserts.item.picture
               "
               alt="Italian Trulli"
             />
@@ -274,6 +274,7 @@ export default {
     submit: function () {
       if (this.editedIndex == -1) {
         let data = new FormData();
+        //console.log(this.picture);
         data.append("picture", this.picture);
         data.append("content", this.editedItem.content);
         data.append("title", this.editedItem.title);
@@ -306,6 +307,7 @@ export default {
         data.append("picture", this.picture);
         data.append("content", this.editedItem.content);
         data.append("title", this.editedItem.title);
+        data.append("price", this.editedItem.price);
         data.append("category_id", this.nameCategory);
         data.append("child_category", this.editedItem.child_categories);
         baseRequest

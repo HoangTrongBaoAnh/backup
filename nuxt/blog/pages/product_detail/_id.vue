@@ -1,48 +1,22 @@
 <template>
-  <div>
+  <div class="productDetail">
     <form @submit.prevent="submit()">
       <section class="mb-5">
         <div class="row">
-          <div class="col-md-6 mb-4 mb-md-0">
-            
-<div v-if="images.normal_size.length">
+          <div class="col-lg-6">
+            <div
+              class="zoomer"
+              style="display: flex; justify-content: center"
+              v-if="images.normal_size.length"
+            >
               <ProductZoomer
-              :base-images="images"
-              :base-zoomer-options="zoomerOptions"
-            ></ProductZoomer>
+                :base-images="images"
+                :base-zoomer-options="zoomerOptions"
+              ></ProductZoomer>
             </div>
-            <!-- <div class="mdb-lightbox">
-              <div class="row product-gallery mx-1">
-                <div class="col-12 mb-0">
-                  <figure class="img-hover-zoom img-hover-zoom--quick-zoom">
-                    <img
-                      height="280"
-                      width="100%"
-                      :src="'http://localhost/blog/public/images/' + current"
-                    />
-                  </figure>
-                </div>
-                <div class="col-12">
-                  <div class="row">
-                    <v-slide-group multiple show-arrows>
-                      <v-slide-item v-for="(item, index) in imgs" :key="index">
-                        <img
-                          @click="changeSource(item)"
-                          height="120"
-                          width="160"
-                          :src="'http://localhost/blog/public/images/' + item"
-                          class="m-2"
-                        />
-                      </v-slide-item>
-                    </v-slide-group>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-            
           </div>
-          <div class="col-md-6">
-            <div style="width: 70%">
+          <div class="col-lg-6">
+            <div>
               <div class="float-left">
                 <h5>{{ posts.title }}</h5>
               </div>
@@ -56,7 +30,7 @@
                   <v-list>
                     <v-list-item>
                       <v-rating
-                        v-model="rating"
+                        v-model.number="rating"
                         color="yellow darken-3"
                         background-color="grey darken-1"
                         empty-icon="$ratingFull"
@@ -112,7 +86,7 @@
             <hr />
             <div class="table-responsive mb-2">
               <v-rating
-                v-model="posts.rating"
+                :value="productRating"
                 color="yellow darken-3"
                 background-color="grey darken-1"
                 empty-icon="$ratingFull"
@@ -149,7 +123,8 @@
               </table>
             </div>
             <button type="submit" class="btn btn-primary btn-md mr-1 mb-2">
-              <i class="fas fa-shopping-cart pr-2"></i>Add to cart
+              <v-icon color="#fff">mdi-cart</v-icon>
+              <div>Add to cart</div>
             </button>
           </div>
         </div>
@@ -165,71 +140,44 @@
         target="_blank"
         :href="
           'https://www.facebook.com/sharer/sharer.php?u=' +
-            url +
-            '&amp;src=sdkpreparse'
+          url +
+          '&amp;src=sdkpreparse'
         "
         class="fb-xfbml-parse-ignore"
       >
         Chia sẻ
       </a>
+    </div>
+    <div class="productCategory">
+      <h2>You may also interested in</h2>
+      <v-slide-group show-arrows>
+        <v-slide-item v-for="item in products" :key="item.id">
+          <v-card width="300" class="ma-4">
+            <v-card-title>
+              {{ item.title }}
+            </v-card-title>
+            <nuxt-link
+              :to="{ name: 'product_detail-id', params: { id: item.id } }"
+            >
+              <v-img
+                lazy-src="https://picsum.photos/id/11/10/6"
+                height="200"
+                width="250"
+                class="ma-4"
+                :src="item.picture"
+              ></v-img>
+            </nuxt-link>
+
+            <v-card-text>
+              <b>{{ item.price }}€</b>
+            </v-card-text>
+          </v-card>
+        </v-slide-item>
+      </v-slide-group>
     </div>
   </div>
-  
-    
 </template>
-<!-- 
-<form @submit.prevent="submit()">
-      <div class="container p-2" v-if="posts">
-        <img
-          height="70px"
-          width="100px"
-          :src="'https://localhost/blog/public/images/' + posts.picture"
-          alt="Italian Trulli"
-        />
-        <p v-text="posts.title"></p>
-        <p v-text="posts.category"></p>
-        <p v-text="posts.price"></p>
-        <b-input type="number" min="1" v-model.number="number" />
-        <div class="quantity">
-          <b-input-group>
-            <b-input-group-prepend>
-              <b-btn variant="info" @click="decrement()">-</b-btn>
-            </b-input-group-prepend>
 
-            <b-form-input
-              type="number"
-              min="0.00"
-              :value="number"
-            ></b-form-input>
-
-            <b-input-group-append>
-              <b-btn variant="info" @click="increment()">+</b-btn>
-            </b-input-group-append>
-          </b-input-group>
-        </div>
-        <button type="submit">Add to Cart</button>
-      </div>
-    </form>
-    <div id="fb-root"></div>
-    <div
-      class="fb-share-button"
-      v-bind:data-href="url"
-      data-layout="button_count"
-    >
-      <a
-        target="_blank"
-        :href="
-          'https://www.facebook.com/sharer/sharer.php?u=' +
-            url +
-            '&amp;src=sdkpreparse'
-        "
-        class="fb-xfbml-parse-ignore"
-      >
-        Chia sẻ
-      </a>
-    </div>
-
--->
 <script>
 import img from "~/store/img";
 import baseRequest from "~/store/baseRequest";
@@ -244,13 +192,13 @@ export default {
         thumbs: [],
         normal_size: [],
       },
+      products: [],
       number: 1,
       cart: [],
       img: [],
+
       rating: null,
-      url:
-        "http://5be4-2405-4802-b2d3-84b0-10a4-a4bb-8b73-5290.ngrok.io" +
-        this.$route.path,
+      url: "https://shopping-app-d.herokuapp.com" + this.$route.path,
       zoomerOptions: {
         zoomFactor: 3,
         pane: "pane",
@@ -268,22 +216,25 @@ export default {
     const { id } = route.params;
 
     const posts = await $axios.$post(
-      "http://localhost/blog/public/api/shoe/show/" + id
+      "https://peaceful-journey-07506.herokuapp.com/api/shoe/show/" + id
     );
+    const productRating = parseFloat(posts.rating);
+    //posts.rating = parseInt(posts.rating);
+    //console.log(posts.rating);
 
-// const posts = await $axios.$post(
-//       "http://peaceful-lowlands-39014.herokuapp.com/api/shoe/show/" + 5
-//     );
-    return { posts };
+    // const posts = await $axios.$post(
+    //       "http://peaceful-lowlands-39014.herokuapp.com/api/shoe/show/" + 5
+    //     );
+    return { posts, productRating };
   },
-  beforeMount(){
+  beforeMount() {
     this.imgURL = img.get();
     this.getPosts();
   },
   mounted() {
-    
+    this.getProductwith();
     this.userRating();
-    console.log(this.posts);
+    //console.log(this.posts);
   },
   watch: {
     rating() {
@@ -291,6 +242,19 @@ export default {
     },
   },
   methods: {
+    getProductwith: function () {
+      const { id } = this.$route.params;
+      baseRequest
+        .get("shoe/sameCategory/" + id)
+        .then((response) => {
+          this.products = response.data;
+
+          console.log(this.products);
+        })
+        .catch((errors) => {
+          console.log(errors);
+        });
+    },
     changeSource: function (src) {
       console.log(src);
       this.current = src;
@@ -304,7 +268,7 @@ export default {
         .post("rating/show", data)
         .then((response) => {
           //console.log(response.data);
-          this.rating = response.data.rating;
+          this.rating = parseFloat(response.data.rating);
           //this.loading = false;
         })
         .catch(function (error) {
@@ -322,7 +286,7 @@ export default {
         .post("rating", data)
         .then((response) => {
           console.log(response.data);
-          this.posts.rating = response.data;
+          this.productRating = parseFloat(response.data.rating);
           //this.loading = false;
         })
         .catch(function (error) {
@@ -341,15 +305,13 @@ export default {
         this.img = JSON.parse(JSON.stringify(response.data));
         let int = 0;
         this.images.thumbs.push({
-            id: int,
-            url:
-              "http://localhost/blog/public/images/" + this.posts.picture,
-          });
-          this.images.normal_size.push({
-            id: int,
-            url:
-              "http://localhost/blog/public/images/" + this.posts.picture,
-          });
+          id: int,
+          url: this.posts.picture,
+        });
+        this.images.normal_size.push({
+          id: int,
+          url: this.posts.picture,
+        });
         // this.current = this.posts.picture;
         // this.imgs.push(this.posts.picture);
         for (const item in this.img) {
@@ -357,13 +319,11 @@ export default {
           int++;
           this.images.thumbs.push({
             id: int,
-            url:
-              "http://localhost/blog/public/images/" + this.img[item].picture,
+            url: this.img[item].picture,
           });
           this.images.normal_size.push({
             id: int,
-            url:
-              "http://localhost/blog/public/images/" + this.img[item].picture,
+            url: this.img[item].picture,
           });
           //console.log(this.images);
         }
@@ -374,7 +334,7 @@ export default {
       this.cart = this.posts;
       this.cart.quantity = this.number;
       console.log(this.cart);
-      this.$store.commit("addToCart", this.cart);
+      this.$store.dispatch("addToCart", this.cart);
     },
   },
   head() {
@@ -393,8 +353,7 @@ export default {
         },
         {
           property: "og:image",
-          content:
-            "https://peaceful-lowlands-39014.herokuapp.com/images/"+this.posts.picture,
+          content: this.posts.picture,
         },
 
         {
@@ -457,22 +416,21 @@ body {
   text-shadow: 2px 2px; */
 }
 
-
-.responsive-image{
+.responsive-image {
   box-shadow: 3px 3px whitesmoke;
   border-radius: 10% !important;
   width: 500px;
-  height: 400px;
+  /* height: 400px; */
   margin-bottom: 10px;
 }
 
-.thumb-list{
+.thumb-list {
   width: 500px !important;
 }
 
-.pane-container{
+.pane-container {
   left: 500px !important;
-  border-radius: 10% ;
+  border-radius: 10%;
 }
 
 .img-hover-zoom img {
@@ -482,5 +440,35 @@ body {
 /* [3] Finally, transforming the image when container gets hovered */
 .img-hover-zoom:hover img {
   transform: scale(1.5);
+}
+
+.zoomer-bottom-base-container {
+  width: 400px !important;
+}
+
+.zoomer-bottom-base-container img {
+  width: auto;
+}
+
+.zoomer-bottom-base-container .thumb-list {
+  width: auto !important;
+  /* width: fit-content !important; */
+}
+
+.productDetail .row {
+  margin-top: 4rem;
+}
+
+.zoomer {
+  /* display: flex;
+  justify-content: center; */
+}
+
+button {
+  border-radius: 5px !important;
+}
+
+.productCategory {
+  margin-top: 5%;
 }
 </style>

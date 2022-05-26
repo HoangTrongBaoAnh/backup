@@ -94,9 +94,9 @@
             <td>{{ img.item.id }}</td>
             <td>
                 <img
-                  height="70px"
+                  height="40px"
                   width="100px"
-                  v-bind:src="'http://localhost/blog/public/images/' + img.item.picture"
+                  v-bind:src="img.item.picture"
                   alt="Italian Trulli"
                 />
             </td>
@@ -220,7 +220,7 @@ export default {
                     //console.log(this.images[i]);
                 }
                 data.append('id', this.$route.params.id);
-                axios.post(`http://localhost/blog/public/api/image/create`, data,
+                axios.post(`https://peaceful-journey-07506.herokuapp.com/api/image/create`, data,
                 {
                     headers:{
                     'Content-Type': `multipart/form-data` 

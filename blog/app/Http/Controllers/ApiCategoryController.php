@@ -37,8 +37,12 @@ class ApiCategoryController extends Controller
      */
     public function store(ApiCategoryRequest $request)
     {
-        $category = new Category();
-        $category->fill($request->all());
+        $category = new Category([
+            'content' => $request->get('content'),
+            // 'category_id' => $request->get('category_id'),  
+        ]);
+        // $category = new Category();
+        // $category->fill($request->all());
         $category->save();
 
         return response()->json($category);

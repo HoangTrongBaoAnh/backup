@@ -1,0 +1,243 @@
+.checkout__left {
+    background: rgba(255, 255, 253, 0.6);
+  
+    /* box-shadow: 0px 38.5185px 25.4815px rgba(0, 0, 0, 0.279407),
+      0px 20px 13px rgba(0, 0, 0, 0.23),
+      0px 8.14815px 6.51852px rgba(0, 0, 0, 0.180593),
+      0px 1.85185px 3.14815px rgba(0, 0, 0, 0.110741); */
+    border-radius: 24px;
+    /* padding-right: 20px; */
+    padding: 15px;
+     border: 2px solid orange ; 
+  }
+  .checkout__item img {
+    width: 200px;
+    height: 180px;
+    border-radius: 10px;
+    padding-left: 20px;
+  }
+  
+  .checkout__item {
+    border-bottom: 2px solid orange;
+  }
+  
+  .checkout__item__header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    display: flex;
+    justify-content: flex-end;
+    /* display: flex;
+    justify-content: space-between; */
+  }
+  
+  .checkout__item__content {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    margin-bottom: 50px;
+  }
+  
+  .checkout__item__content {
+    align-items: center;
+  }
+  
+  .checkout__item__title {
+    text-transform: capitalize;
+    font-family: "Neue Montreal";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 24px;
+    /* identical to box height, or 133% */
+  
+    color: #4f4f4f;
+  }
+  
+  .checkout__item__total {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .checkout__right {
+       border: 2px solid orange ; 
+  
+    background: rgba(255, 255, 253, 0.6);
+    height: 630px;
+    box-shadow: 0px 38.5185px 25.4815px rgba(0, 0, 0, 0.279407),
+      0px 20px 13px rgba(0, 0, 0, 0.23),
+      0px 8.14815px 6.51852px rgba(0, 0, 0, 0.180593),
+      0px 1.85185px 3.14815px rgba(0, 0, 0, 0.110741);
+    border-radius: 24px;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .checkout__item__quantity__header {
+    font-weight: 500;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  
+  .checkout__item__quantity__groupinput {
+    display: flex;
+  }
+  
+  .checkout__item__quantity__groupinput__text {
+    width: 30px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    padding-top: 6px;
+  }
+  
+  .checkout__item__quantity__button {
+    border: 1px solid orange;
+  }
+  
+  .checkout__item__quantity__button:hover {
+    background-color: orange;
+    color: #fff;
+    transition: 0.3 ease;
+  }
+  
+  .checkout__right__button {
+    cursor: pointer;
+    height: 40px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    background: linear-gradient(
+      180deg,
+      rgba(225, 81, 19, 0.75) 0%,
+      rgba(225, 81, 19, 0.8) 35%,
+      #e15113 100%
+    );
+    font-family: "Neue Montreal";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 22px;
+  
+    /* identical to box height, or 127% */
+  
+    color: #ffffff;
+  
+    opacity: 0.8;
+    box-shadow: 0px 18px 29px rgba(23, 16, 21, 0.025),
+      0px 3.6px 4.7125px rgba(23, 16, 21, 0.05);
+    border-radius: 12px;
+  }
+  
+  .checkout__right__item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid orange;
+    margin-top: 50px;
+    padding-bottom: 10px;
+  }
+  
+  .separator {
+    display: flex;
+    margin-bottom: 15px;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .separator::before,
+  .separator::after {
+    content: "";
+    flex: 1;
+    border: 1px solid #000;
+  }
+  
+  .checkout__redirect {
+    margin-top: 20px;
+    height: 40px;
+    align-items: center;
+    display: flex;
+    font-weight: 500;
+  }
+  
+  .checkout__redirect span i {
+    padding-bottom: 4px;
+    color: #000 !important;
+  }
+  
+  @media only screen and (min-width: 320px) {
+    .checkout__right {
+      height: 700px;
+    }
+  
+    .checkout__item__quantity {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    .checkout__item__content {
+      display: block;
+    }
+  
+    .checkout__item__price {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    .checkout__item__img {
+      text-align: center;
+    }
+    .checkout__item__title {
+      margin-top: 20px;
+      text-align: center;
+    }
+  }
+  @media only screen and (min-width: 768px) {
+    .checkout__right {
+      height: 630px;
+    }
+  
+    .checkout__item__quantity {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    .checkout__item__content {
+      display: block;
+    }
+  
+    .checkout__item__price {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+  
+    .checkout__item__img {
+      text-align: center;
+    }
+    .checkout__item__title {
+      margin-top: 20px;
+      text-align: center;
+    }
+  }
+  @media only screen and (min-width: 992px) {
+    .container{
+      max-width: 80%;
+    }
+    .checkout__right {
+      height: 630px;
+    }
+  
+    .checkout__item__quantity {
+      display: block;
+    }
+  
+    .checkout__item__content {
+      display: flex;
+    }
+  
+    .checkout__item__price {
+      display: block;
+    }
+  }

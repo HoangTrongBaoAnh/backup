@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Requests\ApiShoeRequest; 
 use App\Models\Shoe;
+use Intervention\Image\ImageManagerStatic as Images;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+
 
 class ApiShoeController extends Controller
 {
@@ -77,10 +80,39 @@ class ApiShoeController extends Controller
         order BY sum(quantity) DESC;
         */
         $user = DB::table('order_products')
+        ->select('shoes.title','shoes.content','shoes.picture','shoes.price','shoes.rating','shoes.id')
         ->join('shoes', 'shoes.id', '=', 'order_products.product_id')
-        ->groupBy('order_products.product_id')
+        ->join('orders', 'orders.id', '=', 'order_products.order_id')
+        ->groupBy('shoes.id')
         ->orderByRaw('SUM(quantity) desc')
         ->take(4)->get();
+        return response()->json($user);
+    }
+
+    public function GetNewProduct()
+    {
+        /*
+        SELECT shoes.title,sum(quantity)
+        FROM `order_products`,`shoes`
+        WHERE shoes.id=order_products.product_id GROUP BY product_id
+        order BY sum(quantity) DESC;
+        */
+        $user = DB::table('shoes')
+        ->select('shoes.title','shoes.content','shoes.picture','shoes.price','shoes.rating','shoes.id')
+        ->orderBy('updated_at', 'desc')
+        ->take(3)->get();
+        return response()->json($user);
+    }
+
+    public function GetProductwithSameCategory($id)
+    {
+        $product = Shoe::with('category')->where('id', $id)->first();
+
+        $user = DB::table('shoes')
+        ->select('shoes.title','shoes.content','shoes.picture','shoes.price','shoes.rating','shoes.id')
+        ->where( 'shoes.category_id',"=",$product->category_id)
+        ->orderBy('updated_at', 'desc')
+        ->take(8)->get();
         return response()->json($user);
     }
 
@@ -108,21 +140,28 @@ class ApiShoeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ApiShoeRequest $request)
+    public function store(Request $request)
     {
-        $filename = '';
+        $result = '';
         if ($request->hasFile('picture')) {
             $avatar = $request->file('picture');
             $filename = time() . '.' . $avatar->getClientOriginalExtension();
             $destinationPath = public_path('/images');
-            $avatar->move($destinationPath, $filename);
+            $result = cloudinary()->upload($avatar->getRealPath(),[
+                'folder' => 'uploads',
+                'transformation' => [
+                          'width' => 400,
+                          'height' => 400
+                 ]
+                ]);
+            //$avatar->move($destinationPath, $filename);
             //$this->save();
         }
         //$product = new Shoe();
         $product = new Shoe([
             'title' => $request->get('title'),
             'content' => $request->get('content'),  
-            'picture' => $filename,
+            'picture' => $result->getSecurePath(),
             //'childcategory_id' => $request->get('child_category'),
             'price' => $request->get('price'),  
         ]);
@@ -180,18 +219,31 @@ class ApiShoeController extends Controller
     public function update(Request $request, $id)
     {
         $product = Shoe::find($id);
-        $filename = '';
+        $result = '';
         if ($request->hasFile('picture')) {
             $avatar = $request->file('picture');
             $filename = time() . '.' . $avatar->getClientOriginalExtension();
             $destinationPath = public_path('/images');
-            $avatar->move($destinationPath, $filename);
-            $product->picture = $filename;
+            // $image_resize = Images::make($avatar->getRealPath());
+            //         $image_resize->resize(400, 400);
+            //         $image_resize->save(public_path('images/' . $filename));
+            $result = cloudinary()->upload($avatar->getRealPath(),[
+                'folder' => 'uploads',
+                'transformation' => [
+                          'width' => 400,
+                          'height' => 400
+                 ]
+                ]);
+            //$avatar->move($destinationPath, $filename);
+            $product->picture = $result->getSecurePath();
         }
 
-        if($request->input("category") != null){
-            $product->category_id = $request->category;
-            $product->childcategory_id = $request->child_category;
+        if($request->input("category_id") != null){
+            $product->category_id = $request->category_id;
+            if($request->input("child_category") != null){
+                $product->childcategory_id = $request->child_category;
+            }
+            
         }
 
         $product->content = $request->content;

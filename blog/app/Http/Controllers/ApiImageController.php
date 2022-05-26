@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManagerStatic as Images;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ApiImageController extends Controller
 {
@@ -36,27 +38,43 @@ class ApiImageController extends Controller
      */
     public function store(Request $request)
     {
-        $count = DB::table('Images')->where('product_id', '=', $request->input("id"))->count();
+        $matchThese = ['product_id' => $request->get("id")];
+        //$user = Rating::where($matchThese)->first();
+        //$count = DB::table('images')->where('product_id', '=', $request->input("id"))->count();
+        $count = Image::where($matchThese)->count();
         $file_count = count($request->file("files"));
-        if($count + $file_count <= 4){
-            if($request->hasFile("files")){
+        if ($count + $file_count <= 4) {
+            if ($request->hasFile("files")) {
                 $i = 0;
-                foreach($request->file("files") as $picture){
+                foreach ($request->file("files") as $picture) {
                     $image = $picture; //get the file
-                    $name = time().$i.'.'.$image->getClientOriginalExtension(); //get the  file extention
+                    $name = time() . $i . '.' . $image->getClientOriginalExtension(); //get the  file extention
                     $destinationPath = public_path('/images'); //public path folder dir
-                    $image->move($destinationPath, $name);
+
+                    $image_resize = Images::make($image->getRealPath(),);
+                    $image_resize->resize(400, 400);
+                    //$uploadedFileUrl = Cloudinary::upload($image_resize->getRealPath())->getSecurePath();
+                    $result = cloudinary()->upload($image->getRealPath(),[
+                        'folder' => 'uploads',
+                        'transformation' => [
+                                  'width' => 400,
+                                  'height' => 400
+                         ]
+                        ]);
+
+                    //$image_resize->save(public_path('images/' . $name));
+
+                    //$image->move($destinationPath, $name);
                     $i++;
                     $img = new Image([
                         'product_id' => $request->input("id"),
-                        'picture' => $name
+                        'picture' => $result->getSecurePath()
                     ]);
                     $img->save();
                 }
-                return response()->json($name);  
+                return response()->json($name);
             }
-        }
-        else{
+        } else {
             return response()->json("Dont upload over 4 images");
         }
         //return response()->json($name);  
@@ -70,9 +88,9 @@ class ApiImageController extends Controller
      */
     public function show($id)
     {
-        $history = DB::table('Images')
-        ->where('product_id', '=', $id)
-        ->get();
+        $history = DB::table('images')
+            ->where('product_id', '=', $id)
+            ->get();
 
         return response()->json($history);
     }
@@ -105,9 +123,12 @@ class ApiImageController extends Controller
             $destinationPath = public_path('/images');
             $avatar->move($destinationPath, $filename);
             $product->picture = $filename;
+
+            $uploadedFileUrl = Cloudinary::upload($request->file('file')->getRealPath())->getSecurePath();
+
         }
 
-        
+
         $product->save();
 
         return response()->json($product);

@@ -1,0 +1,175 @@
+.ellipse {
+    position: absolute;
+    width: 269px;
+    height: 270px;
+    left: -144px;
+    bottom: -110px;
+    z-index: -99;
+    clip-path: circle(50% at 50% 50%);
+    background: linear-gradient(
+      42.22deg,
+      #ffbb00 26.61%,
+      rgba(255, 213, 97, 0.57) 84.18%
+    );
+  }
+  .rectangle {
+    position: absolute;
+    width: 310.87px;
+    height: 388.58px;
+    right: -200px;
+    top: -164.85px;
+    z-index: -99;
+    background: #e35e6a;
+    transform: rotate(35deg);
+  }
+  .login {
+    z-index: 10;
+    position: relative;
+    font-family: "Montserrat";
+    font-style: normal;
+    background: #ffffff;
+    border-radius: 10px;
+  
+    &__left {
+      position: relative;
+      background: #06a67e;
+      text-align: center;
+      height: 650px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      & .ellipse2 {
+        position: absolute;
+        width: 269px;
+        height: 270px;
+        left: -130px;
+        bottom: -110px;
+        clip-path: circle(50% at 50% 50%);
+        background: rgba(255, 255, 255, 0.2);
+      }
+      & .polygon1 {
+        position: absolute;
+        width: 125.04px;
+        height: 113.98px;
+        right: 0;
+        top: 290.78px;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        background: rgba(255, 255, 255, 0.2);
+        transform: matrix(-0.79, -0.42, 0.79, -0.84, 0, 0);
+      }
+  
+      & .rectangle2 {
+        position: absolute;
+        width: 17.23px;
+        height: 45.79px;
+        right: 174px;
+        bottom: 100px;
+  
+        background: rgba(255, 255, 255, 0.2);
+        transform: matrix(0.68, -0.56, 0.97, 0.66, 0, 0);
+      }
+  
+      & .polygon2 {
+        position: absolute;
+        width: 64.33px;
+        height: 48.37px;
+        right: 100.82px;
+        top: 30.59px;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        background: rgba(255, 255, 255, 0.2);
+      }
+      & button {
+        border: 1px solid #ffffff;
+        box-sizing: border-box;
+        border-radius: 20px;
+  
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 12px;
+        text-align: center;
+  
+        
+  
+        padding: 20px 35px;
+  
+        & a{
+          color: #ffffff;
+        }
+      }
+  
+      & button:hover{
+        background-color: #fff;
+        transition: 0.1 ease;
+        & a{
+          color: #06a67e;
+        }
+      }
+  
+      & h2 {
+        font-weight: 700;
+        font-size: 26px;
+        line-height: 32px;
+        /* identical to box height */
+  
+        color: #ffffff;
+      }
+      & p {
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 17px;
+        text-align: center;
+  
+        color: #ffffff;
+      }
+    }
+  
+    &__right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      background-color: #fff;
+      & form {
+        width: 50%;
+      }
+  
+      & h2 {
+        font-weight: 700;
+        font-size: 32px;
+        line-height: 32px;
+        /* identical to box height */
+        margin-bottom: 30px;
+        color: #38b593;
+      }
+      & .v-input {
+        width: 100%;
+      }
+      & .formButton {
+        background: #38b593;
+        border: 1px solid #ffffff;
+        box-sizing: border-box;
+        border-radius: 20px;
+  
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 12px;
+        text-align: center;
+  
+        color: #ffffff;
+  
+        padding: 20px 50px;
+  
+        & div{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+  
+          & span{
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }

@@ -42,18 +42,20 @@ export default {
         : fullPath.split('/')
       const crumbs = []
       let path = ''
-      // console.log(this.$route.params.slug);
+      
       
       params.forEach((param, index) => {
         path = `${path}/${param}`
-        console.log(params);
+        //console.log(params);
         const match = this.$router.match(path)
+        console.log(path);
         if (match.name !== null) {
           crumbs.push({
             title: param.replace(/-/g, ' '),
             ...match,
           })
         }
+        
       })
       return crumbs
     },

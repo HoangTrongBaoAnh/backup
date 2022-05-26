@@ -1,9 +1,12 @@
 <template>
   <v-app>
     <Nav />
-    <v-main style="padding-bottom:300px">
-      <v-container>
-        <Breadcrumb />
+    <v-main style="padding-bottom:300px;margin-top: 10%;">
+      <div class="scroll" ref="headerRef">
+        <button @click="toTop"><v-icon>mdi-arrow-up-bold</v-icon></button>
+      </div>
+      <v-container fluid>
+        <Breadcrumb style="padding-bottom:50px;margin-top: 2%;" />
         <Nuxt />
       </v-container>
     </v-main>
@@ -61,6 +64,24 @@ export default {
   // },
   
   methods: {
+    shrinkHeader: function () {
+      if (
+        document.body.scrollTop > 100 ||
+        document.documentElement.scrollTop > 100
+      ) {
+        //console.log(this.$refs.headerRef.classList.add("shrink"))
+        //console.log(this.$refs.headerRef.classList)
+        this.$refs.headerRef.classList.add("vis");
+      } else {
+        this.$refs.headerRef.classList.remove("vis");
+      }
+    },
+    toTop: function () {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      },
     clear: function() {
       this.searchQuery = "";
       this.result = [];
@@ -80,6 +101,12 @@ export default {
         });
     }
   },
+  beforeMount() {
+    window.addEventListener("scroll", this.shrinkHeader);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.shrinkHeader);
+  },
   components: {
     Nav,
     Footer,
@@ -88,5 +115,33 @@ export default {
 };
 </script>
 <style>
+.v-main{
+  position: relative;
 
+}
+
+.scroll{
+  position: fixed;
+  bottom: 5%;
+  right: 2%;
+  visibility: hidden;
+  z-index: 100;
+  border-radius: 10px;
+  width:50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  cursor: pointer;
+}
+
+.scroll:hover{
+  background-color: #C0C0BC;
+}
+
+.vis{
+  visibility: visible;
+}
 </style>

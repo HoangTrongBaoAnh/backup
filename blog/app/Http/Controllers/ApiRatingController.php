@@ -56,10 +56,10 @@ class ApiRatingController extends Controller
             $user->save();
         }
         $shoe = Shoe::find($request->get('shoes_id'));
-        $shoe_ratings = Rating::distinct('shoes_id')->where('shoe_id','=',$request->get('shoes_id'))->get();
-        $shoe->rating = $shoe_ratings->avg('rating');
+        $shoe_ratings = Rating::where('shoe_id','=',$request->get('shoes_id'))->pluck('rating')->avg();
+        $shoe->rating = $shoe_ratings;
         $shoe->save();
-        return response()->json($shoe->rating);
+        return response()->json($shoe);
     }
 
     /**

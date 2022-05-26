@@ -30,6 +30,7 @@ Route::post('/logout', 'ApiUserController@logout')->middleware('auth:api');
 Route::post('/user/history', 'ApiUserController@buyinghistory')->middleware('auth:api');
 
 
+
 Route::get('/category', 'ApiCategoryController@index');
 
 Route::post('/rating', 'ApiRatingController@store');
@@ -44,6 +45,8 @@ Route::post('/childcategory/edit/{id}', 'ApiChildCategoryController@update')->mi
 Route::get('/shoe/showall', 'ApiShoeController@showall');
 Route::post('/shoe/childCategory', 'ApiShoeController@childCategory');
 Route::get('/shoe/bestSaleProduct', 'ApiShoeController@bestSaleProduct');
+Route::get('/shoe/newproduct', 'ApiShoeController@GetNewProduct');
+Route::get('/shoe/sameCategory/{id}', 'ApiShoeController@GetProductwithSameCategory');
 Route::post('/shoe/show/{id}', 'ApiShoeController@show');
 Route::get('/shoe', 'ApiShoeController@index');
 Route::get('/shoe/search', 'ApiShoeController@search');
@@ -56,7 +59,7 @@ Route::post('/order/create', 'ApiOrderController@store')->middleware('auth:api')
 Route::post('/order/detail/{id}', 'ApiOrderController@detail')->middleware('auth:api');
 
 Route::post('/image/create', 'ApiImageController@store');
-Route::get('/image/{id}', 'ApiImageController@show')->middleware('auth:api');
+Route::get('/image/{id}', 'ApiImageController@show');
 Route::post('/image/edit/{id}', 'ApiImageController@update')->middleware('auth:api');
 Route::post('/image/delete/{id}', 'ApiImageController@destroy')->middleware('auth:api');
 

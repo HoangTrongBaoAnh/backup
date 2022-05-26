@@ -24,7 +24,7 @@ class ApiShoeRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|min:3|max:10|unique:Shoes|string',
+            'title' => 'required|min:3|max:10|unique:pgsql.shoes|string',
             'child_category' => 'required|integer',
             'category_id' => 'required|integer',
             'picture' => 'image|mimes:jpeg,png|max:2000',
@@ -40,4 +40,13 @@ class ApiShoeRequest extends FormRequest
             'category_id.integer' => 'A category is required'
         ];
     }
+    
+    // public function handle($request, Closure $next)
+    // {
+    //        return $next($request)
+    //            ->header('Access-Control-Allow-Origin', '*')
+    //            ->header('Access-Control-Allow-Methods', '*')
+    //            ->header('Access-Control-Allow-Credentials', 'true')
+    //            ->header('Access-Control-Allow-Headers', 'X-CSRF-Token');
+    // }
 }

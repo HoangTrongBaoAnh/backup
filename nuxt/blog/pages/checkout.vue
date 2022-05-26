@@ -1,41 +1,121 @@
 <template>
-  <div class="w-full">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Quantity</th>
-          <th>Price</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(item, index) in cart" :key="item.id">
-          <td v-text="item.title"></td>
-          <td v-text="item.quantity"></td>
-          <td v-text="item.price"></td>
-          <td>
-            <button @click="$store.commit('removeFromCart', index)">
-              Remove
-            </button>
-          </td>
-        </tr>
-        <tr>
-          <td>Total Amount</td>
-          <td v-text="cartQuantity"></td>
-          <td v-text="cartTotal"></td>
-          <td><button @click="purchase()">Buy</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="text-center" ref="paypal"></div>
-    <button @click="thanhtoan()">Buy</button>
+  <div class="row">
+    <div class="col-lg-7 ">
+      <div class="checkout__left">
+        <div class="checkout__title"><h2>Cart</h2></div>
+
+        <div class="checkout__listitems">
+          <div
+            v-for="(item, index) in cart"
+            :key="index"
+            class="checkout__item"
+          >
+            <div class="checkout__item__header">
+              <button
+                style="margintop: 5px"
+                @click="$store.commit('removeFromCart', index)"
+              >
+                <span>Remove<v-icon>mdi-delete</v-icon></span>
+              </button>
+            </div>
+            <div class="checkout__item__content">
+              <div class="checkout__item__img">
+                <nuxt-link
+                  :to="{
+                    name: 'product_detail-id',
+                    params: { id: item.id },
+                  }"
+                >
+                  <img :src="item.picture" alt="" />
+                </nuxt-link>
+              </div>
+              <div class="checkout__item__title" v-text="item.title"></div>
+              <div class="checkout__item__price">
+                <div class="checkout__item__quantity__header">Price</div>
+                <div v-text="item.price + ' $'"></div>
+              </div>
+              <div class="checkout__item__quantity">
+                <div class="checkout__item__quantity__header">Quantity</div>
+                <div class="checkout__item__quantity__groupinput">
+                  <div class="checkout__item__quantity__button">
+                    <button @click="AdjustQuantity(item, item.quantity - 1)">
+                      <v-icon>mdi-minus</v-icon>
+                    </button>
+                  </div>
+                  <!-- <b-input-group-prepend>
+                    <b-btn
+                      variant="info"
+                      @click="AdjustQuantity(item, item.quantity - 1)"
+                      >-</b-btn
+                    >
+                  </b-input-group-prepend> -->
+                  <div
+                    class="checkout__item__quantity__groupinput__text"
+                    v-text="item.quantity"
+                  ></div>
+                  <!-- <b-form-input
+                    type="number"
+                    min="0"
+                    :value="item.quantity"
+                    @change="AdjustQuantity(item, $event)"
+                  ></b-form-input> -->
+
+                  <div class="checkout__item__quantity__button">
+                    <button @click="AdjustQuantity(item, item.quantity + 1)">
+                      <v-icon>mdi-plus</v-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="checkout__item__total">
+              <div>
+                <span style="fontweight: 600; fontsize: 20px">Amount: </span>
+                <span v-text="item.price * item.quantity"></span>
+                $
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="checkout__redirect">
+          <nuxt-link to="/Category"
+            ><div>
+              <span><v-icon>mdi-arrow-left</v-icon></span> Continue Shopping
+            </div>
+          </nuxt-link>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-1"></div>
+    <div class="col-lg-4 checkout__right">
+      <h2>Order Info</h2>
+      <div>
+        <div class="checkout__right__item">
+          <div>Total Amount:</div>
+          <div v-text="cartQuantity"></div>
+        </div>
+        <div class="checkout__right__item">
+          <div>Total:</div>
+          <div v-text="cartTotal + ' $'"></div>
+        </div>
+
+        <div class="checkout__right__button">
+          <button @click="purchase()">Buy</button>
+        </div>
+        <div class="separator">or</div>
+        <div>
+          <div class="text-center" ref="paypal"></div>
+          <div class="checkout__right__button">
+            <button @click="thanhtoan()">Payment with MoMo</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
 </template>
 <script>
 const axios = require("axios");
-
-//import { returnTodaysWeather } from '../order.js'
 import baseRequest from "~/store/baseRequest";
 export default {
   data() {
@@ -91,6 +171,13 @@ export default {
     this.save();
   },
   methods: {
+    AdjustQuantity(item, quantity) {
+      //console.log(quantity)
+      this.$store.commit("AdjustQuantity", {
+        ...item,
+        quantity: parseInt(quantity),
+      });
+    },
     thanhtoan: function () {
       var endpoint =
         "https://test-payment.momo.vn/gw_payment/transactionProcessor";
@@ -227,6 +314,7 @@ export default {
         .post("order/create", data)
         .then((response) => {
           console.log(response);
+          this.$store.commit("removeFromCart");
           //this.loading = false;
           //this.getPosts();
         })
@@ -277,3 +365,8 @@ export default {
   },
 };
 </script>
+
+<style>
+@import '~/assets/scss/style/checkout.css';
+
+</style>

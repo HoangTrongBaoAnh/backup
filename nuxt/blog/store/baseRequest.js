@@ -1,5 +1,5 @@
 const axios = require("axios");
-const apiUrl = "http://localhost/blog/public/api/";
+const apiUrl = "https://peaceful-journey-07506.herokuapp.com/api/";
 
 axios.interceptors.response.use(
   function(response) {

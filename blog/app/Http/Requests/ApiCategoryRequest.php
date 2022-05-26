@@ -24,7 +24,7 @@ class ApiCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'content' => 'required|min:3|max:10|unique:Categories',
+            'content' => 'required|min:3|max:10|unique:categories',
         ];
     }
 }

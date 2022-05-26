@@ -164,7 +164,7 @@ export default {
     getPosts: function () {
       this.loading = true;
       this.$axios
-        .$get("http://localhost/blog/public/api/category")
+        .$get("https://peaceful-journey-07506.herokuapp.com/api/category")
         .then((response) => {
           this.desserts = response;
         });

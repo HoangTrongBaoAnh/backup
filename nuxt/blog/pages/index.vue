@@ -1,21 +1,28 @@
 <template>
   <div id="main">
-    <div class="row row-full">
-      <v-carousel height="600px">
+    <div class="">
+      <v-img
+        :src="'https://static.vecteezy.com/system/resources/previews/000/669/988/non_2x/vector-shopping-online-banner.jpg'"
+      ></v-img>
+      <!-- <v-carousel height="600px">
         <v-carousel-item
           v-for="(item, i) in items"
           :key="i"
           :src="item.src"
         ></v-carousel-item>
-      </v-carousel>
+      </v-carousel> -->
     </div>
     <div>
-      <div class="text-center">
-        <p>Best Sale Product</p>
+      <div class="text-center pt-4">
+        <h2 class="ntitle">Best Sale Product</h2>
       </div>
       <div>
         <div class="row">
-          <div class="col-3" v-for="item in products" :key="item.id">
+          <div
+            class="col-lg-3 col-md-6"
+            v-for="item in products"
+            :key="item.id"
+          >
             <v-card class="mx-auto my-12" max-width="374">
               <template slot="progress">
                 <v-progress-linear
@@ -27,10 +34,7 @@
               <nuxt-link
                 :to="{ name: 'product_detail-id', params: { id: item.id } }"
               >
-                <v-img
-                  height="250"
-                  :src="'http://localhost/blog/public/images/' + item.picture"
-                ></v-img>
+                <v-img height="250" :src="item.picture"></v-img>
               </nuxt-link>
 
               <v-card-title>{{ item.title }}</v-card-title>
@@ -38,7 +42,7 @@
               <v-card-text>
                 <v-row align="center" class="mx-0">
                   <v-rating
-                    :value="4.5"
+                    :value="item.rating"
                     color="amber"
                     dense
                     half-increments
@@ -46,14 +50,13 @@
                     size="14"
                   ></v-rating>
 
-                  <div class="grey--text ms-4">4.5 (413)</div>
+                  <div class="grey--text ms-4">{{ item.rating }} (413)</div>
                 </v-row>
 
-                <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
+                <div class="my-4 text-subtitle-1">$ • {{ item.price }}</div>
 
                 <div>
-                  Small plates, salads & sandwiches - an intimate setting with
-                  12 indoor seats plus patio seating.
+                  {{ item.content }}
                 </div>
               </v-card-text>
 
@@ -65,11 +68,14 @@
                   text
                   @click="$store.commit('addToCart', item)"
                 >
-                  Reserve
+                  Buy
                 </v-btn>
               </v-card-actions>
             </v-card>
           </div>
+        </div>
+        <div class="text-center m-4">
+          <h2 class="ntitle">New Product</h2>
         </div>
         <div class="mx-auto">
           <v-lazy
@@ -81,30 +87,32 @@
             transition="scroll-y-transition"
           >
             <div class="row">
-              <div class="col-4" v-for="n in 3" :key="n">
+              <div class="col-4" v-for="item in newproduct" :key="item.id">
                 <v-card class="mx-auto" max-width="336">
-                  <v-card-title>Card title</v-card-title>
-
+                  <v-card-title>{{ item.title }}</v-card-title>
+                  <nuxt-link
+                    :to="{ name: 'product_detail-id', params: { id: item.id } }"
+                  >
+                    <v-img
+                      max-height="200"
+                      :src="item.picture"
+                      style="margin: 16px"
+                    ></v-img>
+                  </nuxt-link>
                   <v-card-text>
-                    Phasellus magna. Quisque rutrum. Nunc egestas, augue at
-                    pellentesque laoreet, felis eros vehicula leo, at malesuada
-                    velit leo quis pede. Aliquam lobortis. Quisque libero metus,
-                    condimentum nec, tempor a, commodo mollis, magna. In turpis.
-                    In dui magna, posuere eget, vestibulum et, tempor auctor,
-                    justo. In turpis. Pellentesque dapibus hendrerit tortor. Ut
-                    varius tincidunt libero.
+                    {{ item.content }}
                   </v-card-text>
                 </v-card>
               </div>
             </div>
           </v-lazy>
         </div>
-        <div class="mx-auto m-4">
+        <div class="mx-auto m-4 tabslide">
           <v-tabs
             v-model="tab"
+            centered
             background-color="transparent"
             color="basil"
-            grow
           >
             <v-tab
               v-for="item in categories"
@@ -115,7 +123,7 @@
             </v-tab>
           </v-tabs>
 
-          <v-tabs-items v-model="tab">
+          <v-tabs-items v-model="tab" class="m-4">
             <v-tab-item v-for="item in categories" :key="item.id">
               <v-slide-group class="mySlider pa-4" show-arrows color="dark">
                 <v-slide-item v-for="n in products_ca" :key="n.id">
@@ -126,12 +134,7 @@
                         params: { id: n.id },
                       }"
                     >
-                      <v-img
-                        height="200"
-                        :src="
-                          'http://localhost/blog/public/images/' + n.picture
-                        "
-                      ></v-img>
+                      <v-img height="250" :src="n.picture"></v-img>
                     </nuxt-link>
 
                     <v-card-title>{{ n.title }}</v-card-title>
@@ -139,7 +142,7 @@
                     <v-card-text>
                       <v-row align="center" class="mx-0">
                         <v-rating
-                          :value="4.5"
+                          :value="parseFloat(n.rating)"
                           color="amber"
                           dense
                           half-increments
@@ -147,14 +150,13 @@
                           size="14"
                         ></v-rating>
 
-                        <div class="grey--text ms-4">4.5 (413)</div>
+                        <div class="grey--text ms-4">{{ n.rating }} (413)</div>
                       </v-row>
 
-                      <div class="my-4 text-subtitle-1">$ • Italian, Cafe</div>
+                      <div class="my-4 text-subtitle-1">$ • {{ n.price }}</div>
 
                       <div>
-                        Small plates, salads & sandwiches - an intimate setting
-                        with 12 indoor seats plus patio seating.
+                        {{ n.content }}
                       </div>
                     </v-card-text>
 
@@ -176,7 +178,7 @@
           </v-tabs-items>
         </div>
 
-        <v-slide-group class="pa-4" show-arrows>
+        <!-- <v-slide-group class="pa-4" show-arrows>
           <v-slide-item v-for="n in 15" :key="n">
             <v-img
               lazy-src="https://picsum.photos/id/11/10/6"
@@ -186,7 +188,50 @@
               src="https://picsum.photos/id/11/500/300"
             ></v-img>
           </v-slide-item>
-        </v-slide-group>
+        </v-slide-group> -->
+
+        <div class="brands">
+          <div>
+            <div class="row">
+              <div class="col-2">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Godrej_Logo.svg/2560px-Godrej_Logo.svg.png"
+                  alt="logo"
+                />
+              </div>
+              <div class="col-2">
+                <img
+                  src="https://cdn.tgdd.vn/Files/2019/03/12/1154295/oppo-logo-old_600x277.jpg"
+                  alt="logo"
+                />
+              </div>
+              <div class="col-2">
+                <img
+                  src="https://haitrieu.com/wp-content/uploads/2022/01/Logo-Cocacola-Re.png"
+                  alt="logo"
+                />
+              </div>
+              <div class="col-2">
+                <img
+                  src="https://cdn.pixabay.com/photo/2015/05/26/09/37/paypal-784404__480.png"
+                  alt="logo"
+                />
+              </div>
+              <div class="col-2">
+                <img
+                  src="https://shojiki.vn/template/uploads/2021/04/philips-logo.jpg"
+                  alt="logo"
+                />
+              </div>
+              <div class="col-2">
+                <img
+                  src="https://cdn0.fahasa.com/media/wysiwyg/NXB/Logo-IPM.jpg"
+                  alt="logo"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -216,23 +261,25 @@ export default {
       isActive: false,
       img: [],
       products_ca: [],
+      newproduct: [],
     };
   },
   async asyncData({ $axios, route }) {
     //const { id } = route.params;
     //console.log(id);
     const categories_pa = await $axios.$get(
-      "http://localhost/blog/public/api/category"
+      "https://peaceful-journey-07506.herokuapp.com/api/category"
     );
     const categories = await $axios.$get(
-      "http://localhost/blog/public/api/childcategory/" + categories_pa[0].id
+      "https://peaceful-journey-07506.herokuapp.com/api/childcategory/" +
+        categories_pa[0].id
     );
     return { categories, categories_pa };
   },
   mounted() {
     this.getProducts();
     // this.getPosts();
-
+    this.getNewProduct();
     this.changeTab(this.categories[0].id);
   },
   methods: {
@@ -261,6 +308,26 @@ export default {
         .get("shoe/bestSaleProduct")
         .then((response) => {
           this.products = response.data;
+          this.products.forEach(element => {
+            let rating = element.rating;
+            element.rating = parseFloat(rating);
+          });
+          //this.products.rating = parseFloat(response)
+          //console.log(this.childcategories);
+        })
+        .catch((errors) => {
+          console.log(errors);
+        });
+    },
+    getNewProduct: function () {
+      baseRequest
+        .get("shoe/newproduct")
+        .then((response) => {
+          this.newproduct = response.data;
+          // this.newproduct.forEach(element => {
+          //   let rating = element.rating;
+          //   element.rating = parseFloat(rating);
+          // });
           //console.log(this.childcategories);
         })
         .catch((errors) => {
@@ -271,11 +338,14 @@ export default {
 };
 </script>
 <style>
+#main {
+  padding-top: 20px;
+}
 * {
   text-decoration: none !important;
 }
-.mySlider{
-  background-color:#B9B8B1;
+.mySlider {
+  /* background-color: #b9b8b1; */
 }
 .row-full {
   width: 100vw;
@@ -284,5 +354,80 @@ export default {
   height: 100px;
   margin-bottom: 50%;
   left: 49%;
+}
+.col-5 {
+  width: 160px;
+}
+
+.col-2 img {
+  width: 100%;
+  cursor: pointer;
+  filter: grayscale(100%);
+}
+
+.col-2 img:hover {
+  filter: none;
+}
+
+.brands {
+  margin-top: 15%;
+}
+
+.brands .row {
+  align-items: center;
+  margin-top: 15%;
+}
+
+.tabslide {
+  margin-top: 15% !important;
+}
+
+.mySlider {
+  border: 1px solid #495057;
+  border-radius: 15px;
+}
+
+.v-slide-group__prev,
+.v-slide-group__next {
+  background-color: gray;
+  border-radius: 10px;
+}
+
+.v-slide-group__prev i,
+.v-slide-group__next i {
+  color: aliceblue !important;
+  font-size: 30px !important;
+}
+
+.v-slide-group__prev:hover,
+.v-slide-group__next:hover {
+  background-color: orange;
+  border-radius: 10px;
+}
+
+.v-image {
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.ntitle {
+  text-align: center;
+  margin: 50px auto 80px;
+  position: relative;
+  line-height: 60px !important;
+  color: #555;
+  font-size: 2rem;
+}
+
+.ntitle::after {
+  content: "";
+  background: #ff523b;
+  width: 80px;
+  height: 5px;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

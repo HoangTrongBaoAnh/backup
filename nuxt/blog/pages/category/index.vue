@@ -1,96 +1,22 @@
 <template>
   <div class="row pt-4">
     <div class="col-md-12 col-lg-3 shadow p-3 mb-5 bg-white rounded">
-      <v-list expand light dense nav>
-        <v-list-group prepend-icon="mdi-book-multiple" :value="true">
-          <template v-slot:activator>
-            <v-list-item-title>Danh muc</v-list-item-title>
-          </template>
-          <v-list-item-group>
-            <v-list-item
-              style="padding-left: 40px"
-              link
-              v-for="(item, i) in categories"
-              :key="i"
-            >
-              <NuxtLink
-                :to="{
-                  name: 'category-slug',
-                  params: { slug: item.content, id: item.id },
-                }"
-                
-              >
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.content"></v-list-item-title>
-                </v-list-item-content>
-              </NuxtLink>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list-group>
-
-        <v-list-group :value="true" no-action prepend-icon="mdi-account-circle">
-          <template v-slot:activator>
-            <v-list-item-title>Category</v-list-item-title>
-          </template>
-          <v-list-item-group>
-            <v-list-item
-              style="padding-left: 40px"
-              v-for="item in childcategories"
-              :key="item.id"
-            >
-              <v-list-item-content>
-                <v-list-item-title>
-                  <label class="form-check-label" :for="'category' + item.id">
-                    {{ item.title }}
-                  </label>
-                </v-list-item-title>
-              </v-list-item-content>
-              <input
-                :value="item.id"
-                v-model="selected.child"
-                :id="'category' + item.id"
-                type="checkbox"
-                class="form-check-input"
-              />
-            </v-list-item>
-          </v-list-item-group>
-        </v-list-group>
-        <v-list-group prepend-icon="mdi-cash-multiple" :value="true" no-action>
-          <template v-slot:activator>
-            <v-list-item-title>Price</v-list-item-title>
-          </template>
-          <v-list-item-group>
-            <v-list-item
-              style="padding-left: 40px"
-              v-for="item in prices"
-              :key="'price' + item.id"
-            >
-              <input
-                :value="item.id"
-                v-model="selected.prices"
-                :id="'price' + item.id"
-                type="checkbox"
-                class="form-check-input"
-              />
-              <label class="form-check-label" :for="'price' + item.id">
-                {{ item.title }}
-              </label>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list-group>
-        <div class="v-list-group v-list-group--default v-list-group--no-action">
-          <v-list-item-group>
-            <v-list-item-content>
-              <v-list-item-title>Publisher</v-list-item-title>
-            </v-list-item-content>
-
-            <v-list-item> </v-list-item>
-          </v-list-item-group>
-        </div>
-      </v-list>
+      <FilterBar
+        v-if="categories"
+        v-bind:categories="categories"
+        v-bind:childcategories="childcategories"
+        @update-push="updateSelected($event)"
+      />
     </div>
-    <div class="col-md-12 col-lg-9" style="box-shadow: 0 2.5rem 2rem -2rem hsl(200 50% 20% / 40%);">
-      <v-carousel class="shadow p-3 mb-5 bg-white rounded" hide-delimiters height="240px">
+    <div
+      class="col-md-12 col-lg-9"
+      style="box-shadow: 0 2.5rem 2rem -2rem hsl(200 50% 20% / 40%)"
+    >
+      <v-carousel
+        class="shadow p-3 mb-5 bg-white rounded"
+        hide-delimiters
+        height="240px"
+      >
         <v-carousel-item
           v-for="(item, i) in items"
           :key="i"
@@ -121,48 +47,12 @@
         </v-col>
       </div>
       <div class="row">
-        <div class="col-md-6 col-lg-4" v-for="product in posts" :key="product.id">
-          <div class="card__container">
-            <div class="card__top__section">
-              <img :src="imgURL + product.picture" />
-              <div class="card__top__section__icons">
-                <div>
-                  <i><v-icon dark>mdi-heart</v-icon></i>
-                </div>
-                <div @click="addToCart(product)">
-                  <i><v-icon dark>mdi-shopping</v-icon></i>
-                </div>
-                <div>
-                  <i><v-icon dark>mdi-share</v-icon></i>
-                </div>
-              </div>
-            </div>
-            <div class="card__body__section">
-              <nuxt-link
-                :to="{ name: 'product_detail-id', params: { id: product.id } }"
-                class="image"
-              >
-                <p>{{ product.title }}</p>
-              </nuxt-link>
-              <span>A nice blue shirt for men. One size fit all.</span>
-            </div>
-            <div>
-              <div class="rating-section">
-                <div class="stars-rating">
-                  <span>{{ product.rating }}</span>
-                  <v-rating
-                    v-model="product.rating"
-                    background-color="#777"
-                    size="18"
-                    color="#f7bc3d"
-                  ></v-rating>
-                </div>
-                <div class="c-price">
-                  <span>$ {{ product.price }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div
+          class="col-md-6 col-lg-4"
+          v-for="product in posts"
+          :key="product.id"
+        >
+          <Card v-bind:product="product" />
         </div>
       </div>
       <div class="text-center mt-4">
@@ -181,7 +71,14 @@
 <script>
 import img from "~/store/img";
 import baseRequest from "~/store/baseRequest";
+import Card from "~/components/client/card.vue";
+import FilterBar from "~/components/client/filterbar.vue";
+
 export default {
+  components: {
+    Card,
+    FilterBar,
+  },
   data() {
     return {
       snackbar: false,
@@ -249,7 +146,7 @@ export default {
     //const { id } = route.params;
     //console.log(id);
     const categories = await $axios.$get(
-      "http://localhost/blog/public/api/category"
+      "https://peaceful-journey-07506.herokuapp.com/api/category"
     );
     return { categories };
   },
@@ -285,16 +182,13 @@ export default {
       deep: true,
     },
   },
-  // async asyncData({ $axios }) {
-  //   // const post2 = await $axios.$get(
-  //   //   "http://localhost/blog/public/api/shoe?page=1"
-  //   // ).then((res) => {
-  //   //   return { posts: res.data.data }
-  //   // });
-
-  //   // return { post2,posts };
-  // },
   methods: {
+    updateSelected(selected) {
+      this.$nextTick(() => {
+        this.selected.prices = selected.prices;
+        this.selected.child = selected.child;
+      });
+    },
     addToCart(product) {
       this.cart = product;
       this.cart.quantity = 1;
@@ -350,21 +244,24 @@ export default {
     },
     async getPosts() {
       const ip = await this.$axios.$get(
-        "http://localhost/blog/public/api/shoe?page=" + this.currentPage
+        "https://peaceful-journey-07506.herokuapp.com/api/shoe?page=" +
+          this.currentPage
       );
       this.posts = ip.data;
       this.totalPage = ip.last_page;
       console.log(this.posts);
     },
     loadProducts: function () {
-      let data = new FormData();
-      data.append("categories", this.selected.categories.id);
-      //console.log(this.selected.categories.map(x => x.id));
-      data.append("prices", this.selected.prices);
-      data.append("publishers", this.selected.publishers);
+      // var FormData = require('form-data');
+      // let data = new FormData();
+      // data.append("categories", this.selected.categories.id);
+      // //console.log(this.selected.categories.map(x => x.id));
+      // data.append("prices", this.selected.prices);
+      // data.append("publishers", this.selected.publishers);
       this.$axios
         .$get(
-          "http://localhost/blog/public/api/shoe?page=" + this.currentPage,
+          "https://peaceful-journey-07506.herokuapp.com/api/shoe?page=" +
+            this.currentPage,
           {
             params: {
               categories: this.selected.categories,
@@ -379,15 +276,19 @@ export default {
           //console.log(this.selections);
           this.posts = response.data;
           this.totalPage = response.last_page;
+          this.posts.forEach(element => {
+            let rating = element.rating;
+            element.rating = parseFloat(rating);
+          });
           //this.loading = false;
         })
         .catch(function (error) {
           console.log(error);
         });
     },
-    loadCategories: function () {
-      this.$axios
-        .$get("http://localhost/blog/public/api/category", {
+    loadCategories: async function () {
+      await this.$axios
+        .$get("https://peaceful-journey-07506.herokuapp.com/api/category", {
           params: {
             categories: this.selected.categories,
           },
@@ -454,114 +355,17 @@ export default {
 
 img {
   width: 100%;
-  position: relative;
+  /* position: relative;
 
-  display: block;
+  display: block; */
+  margin-right: -30px;
   border-radius: inherit;
-}
-
-.card__container {
-  width: 260px;
-  background-color: #fff;
-  -webkit-box-shadow: 0 2.5rem 2rem -2rem hsl(200 50% 20% / 40%);
-  box-shadow: 0 2.5rem 2rem -2rem hsl(200 50% 20% / 40%);
-  margin: 0 auto;
-  border-radius: 8px;
-  border: 2px;
-  /* position: relative; */
-  top: 30px;
-  margin-bottom: 60px;
-  height: 90%;
-}
-
-.card__top__section {
-  background: -webkit-gradient(
-    linear,
-    left top,
-    right top,
-    from(#64c1ff),
-    to(#0064b7)
-  );
-  background: -o-linear-gradient(left, #64c1ff, #0064b7);
-  background: linear-gradient(to right, #64c1ff, #0064b7);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: 0 0;
-  height: 220px;
-  width: 100%;
-  padding: 10px 0px 0px 0px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.card__top__section__icons > div {
-  width: 38px;
-  height: 38px;
-  background-color: rgb(83, 64, 64);
-  border-radius: 50%;
-  /* z-index: 100; */
-  position: relative;
-  left: -48px;
-  margin-bottom: 10px;
-  display: table;
-}
-
-.card__top__section__icons > div:hover {
-  background-color: rgb(169, 197, 46);
-  transform: scale(1.5);
-}
-
-.card__top__section__icons > div > i {
-  vertical-align: middle;
-  text-align: center;
-  display: table-cell;
-  color: #454545;
-  font-size: 16px;
-}
-
-.card__body__section {
-  text-align: center;
-  padding: 8px 5px;
-}
-
-.card__body__section > p {
-  font-weight: 700;
-}
-
-.rating-section {
-  border-top: 1px solid #eee;
-  padding: 8px 12px;
-  margin-top: 5px;
-  display: table;
-  margin-bottom: 20px;
-  clear: both;
-  width: 100%;
-}
-
-.rating-with-color {
-  color: #ffa500;
-}
-
-.stars-rating {
-  float: left;
-}
-
-.stars-rating > span {
-  font-size: small;
-}
-
-.c-price {
-  padding-top: 5px;
-  float: right;
 }
 
 @media screen and (max-width: 450px) {
   .card__container {
     width: 90% !important;
-    
+
     left: 27px;
   }
 }

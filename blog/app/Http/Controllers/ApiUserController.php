@@ -32,7 +32,12 @@ class ApiUserController extends Controller
             return response()->json($user);
         }
         
-        return response()->json(['email' => 'sai ten truy cap hoac mat khau'],401);
+        return response()->json([
+            'errors' => [
+                'email' => ["sai ten truy cap hoac mat khau"],
+                'password' => ["sai ten truy cap hoac mat khau"],
+            ]
+        ],401);
     }
 
     public function userInfo(Request $request){
@@ -60,11 +65,22 @@ class ApiUserController extends Controller
         }
 
         if($request->hasFile("picture")){
-            $image = $request->file('picture'); //get the file
-            $name = time().'.'.$image->getClientOriginalExtension(); //get the  file extention
-            $destinationPath = public_path('/images'); //public path folder dir
-            $image->move($destinationPath, $name);
-            $user->picture = $name;
+            // $image = $request->file('picture'); //get the file
+            // $name = time().'.'.$image->getClientOriginalExtension(); //get the  file extention
+            // $destinationPath = public_path('/images'); //public path folder dir
+            // $image->move($destinationPath, $name);
+            // $user->picture = $name;
+            $avatar = $request->file('picture');
+            $filename = time() . '.' . $avatar->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $result = cloudinary()->upload($avatar->getRealPath(),[
+                'folder' => 'uploads',
+                'transformation' => [
+                          'width' => 400,
+                          'height' => 400
+                 ]
+                ]);
+            $user->picture =$result->getSecurePath();
         }
 
         $user->save();
