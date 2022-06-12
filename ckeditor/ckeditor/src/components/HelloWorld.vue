@@ -1,58 +1,83 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+  <div id="app">
+    <ckeditor
+      :editor="editor"
+      v-model="editordata"
+      @input="(event) => handle_change(event)"
+      :config="editorConfig"
+    ></ckeditor>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
-</script>
+import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>
+import EssentialsPlugin from "@ckeditor/ckeditor5-essentials/src/essentials";
+import BoldPlugin from "@ckeditor/ckeditor5-basic-styles/src/bold";
+import ItalicPlugin from "@ckeditor/ckeditor5-basic-styles/src/italic";
+import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
+import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
+
+import EasyImagePlugin from "@ckeditor/ckeditor5-easy-image/src/easyimage";
+import ImagePlugin from "@ckeditor/ckeditor5-image/src/image";
+import ImageUploadPlugin from "@ckeditor/ckeditor5-image/src/imageupload";
+import CloudServicesPlugin from "@ckeditor/ckeditor5-cloud-services/src/cloudservices";
+
+import ClipBoardPlugin from "@ckeditor/ckeditor5-clipboard/src/clipboard";
+import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed";
+
+export default {
+  // props: ["modelValue"],
+  //emits: ["update:modelValue"],
+  props: {
+    modelValue: {
+      type: String,
+      required: false,
+    },
+  },
+  methods:{
+    handle_change:function(event){
+      //console.log(event)
+      this.$emit('update:modelValue', event);
+    }
+  },
+  data() {
+    return {
+      editor: ClassicEditor,
+      editordata: this.modelValue,
+      editorConfig: {
+        plugins: [
+          EssentialsPlugin,
+          BoldPlugin,
+          ItalicPlugin,
+          LinkPlugin,
+          ParagraphPlugin,
+          EasyImagePlugin,
+          ImagePlugin,
+          ImageUploadPlugin,
+          CloudServicesPlugin,
+          ClipBoardPlugin,
+          MediaEmbed,
+        ],
+        cloudServices: {
+          tokenUrl:
+            "https://89901.cke-cs.com/token/dev/a3569ae970a35ac828ac570b3251fb87f9ab9d272ed044558d088f28b297?limit=10",
+          uploadUrl: "https://89901.cke-cs.com/easyimage/upload/",
+        },
+
+        toolbar: {
+          items: [
+            "bold",
+            "italic",
+            "link",
+            "undo",
+            "redo",
+            "imageUpload",
+            "mediaEmbed",
+          ],
+        },
+      },
+    };
+  },
+};
+</script>
